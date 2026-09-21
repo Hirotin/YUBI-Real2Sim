@@ -4,9 +4,6 @@
 
 ![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
 
-- CSVs: [`results/data/success_rate_overall/`](results/data/success_rate_overall)
-- Script: [`results/scripts/plot_success_rate_overall.py`](results/scripts/plot_success_rate_overall.py)
-
 ## Task Success Rate under Disturbances
 
 Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance.
@@ -22,8 +19,6 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 ### Policy ranking reversed by the disturbance
 
 ![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
-
-- Script: [`results/scripts/plot_disturbance_highlights.py`](results/scripts/plot_disturbance_highlights.py)
 
 ### All results: Duo
 
@@ -49,22 +44,13 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
-- CSVs: [`results/data/success_rate_disturbances/`](results/data/success_rate_disturbances)
-- Script: [`results/scripts/plot_success_rate_disturbances.py`](results/scripts/plot_success_rate_disturbances.py)
-
 ## Reconstruction Quality (MAE / CrossScore)
 
 ![Reconstruction quality: MAE and CrossScore](results/figures/reconstruction_metrics.png)
 
-- CSV: [`results/data/reconstruction_metrics.csv`](results/data/reconstruction_metrics.csv)
-- Script: [`results/scripts/plot_reconstruction_metrics.py`](results/scripts/plot_reconstruction_metrics.py)
-
 ## Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
 ![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
-
-- CSV: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
-- Script: [`results/scripts/plot_novel_view_metrics.py`](results/scripts/plot_novel_view_metrics.py)
 
 ---
 

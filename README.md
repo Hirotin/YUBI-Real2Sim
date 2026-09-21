@@ -19,7 +19,23 @@
 
 ## Task Success Rate under Disturbances
 
-### Duo
+Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance.
+
+### Significant under Clean, not under the disturbance
+
+![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png)
+
+### Not significant under Clean, significant under the disturbance
+
+![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
+
+### Policy ranking reversed by the disturbance
+
+![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
+
+- Script: [`results/scripts/plot_disturbance_highlights.py`](results/scripts/plot_disturbance_highlights.py)
+
+### All results: Duo
 
 ![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
 
@@ -27,7 +43,7 @@
 
 ![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
 
-### Flat
+### All results: Flat
 
 ![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
 
@@ -35,7 +51,7 @@
 
 ![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
 
-### G2
+### All results: G2
 
 ![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
 

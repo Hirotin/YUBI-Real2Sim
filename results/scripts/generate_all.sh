@@ -6,5 +6,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 python3 plot_success_rate_overall.py
 python3 plot_success_rate_disturbances.py
+python3 plot_disturbance_highlights.py
 python3 plot_reconstruction_metrics.py
 python3 plot_novel_view_metrics.py

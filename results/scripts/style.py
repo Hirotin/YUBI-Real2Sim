@@ -88,3 +88,26 @@ def savefig(fig, output_png_path):
     )
     fig.savefig(output_png_path, dpi=300)
     plt.close(fig)
+
+
+def fisher_two_sided(a, n1, b, n2):
+    """Two-sided Fisher exact p for [[a, n1-a], [b, n2-b]], as in the paper's
+    significance plots."""
+    total = a + b
+    lo, hi = max(0, total - n2), min(n1, total)
+
+    def prob(x):
+        return math.comb(n1, x) * math.comb(n2, total - x) / math.comb(n1 + n2, total)
+
+    observed = prob(a)
+    return min(1.0, sum(prob(x) for x in range(lo, hi + 1) if prob(x) <= observed + 1e-15))
+
+
+def p_label(p):
+    if p < 0.001:
+        return "p<.001 ***"
+    if p < 0.01:
+        return f"p={p:.3f} **"
+    if p < 0.05:
+        return f"p={p:.3f} *"
+    return f"p={p:.3f} n.s."

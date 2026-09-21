@@ -2,7 +2,7 @@
 
 ## 1. Task Success Rate: Real Robot vs. Clean Sim
 
-![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
+![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png?v=ebb906de)
 
 ## 2. Task Success Rate under Disturbances
 
@@ -10,57 +10,57 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ### 2.1 Policy ranking reversed
 
-![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
+![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png?v=57ca485f)
 
 ### 2.2 From significant to not significant
 
-![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png)
+![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png?v=892b19d5)
 
 ### 2.3 From not significant to significant
 
-![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
+![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png?v=745a975f)
 
 ### 2.4 All results: Duo
 
-![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
+![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png?v=3fbfd21d)
 
-![Task success rate under disturbances — Duo / Pen](results/figures/success_rate_disturbances/Duo_Pen.png)
+![Task success rate under disturbances — Duo / Pen](results/figures/success_rate_disturbances/Duo_Pen.png?v=d88f936e)
 
-![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
+![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png?v=4f5f5e4c)
 
 ### 2.5 All results: Flat
 
-![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
+![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png?v=def4d562)
 
-![Task success rate under disturbances — Flat / Pen](results/figures/success_rate_disturbances/Flat_Pen.png)
+![Task success rate under disturbances — Flat / Pen](results/figures/success_rate_disturbances/Flat_Pen.png?v=7784613a)
 
-![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
+![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png?v=99d19850)
 
 ### 2.6 All results: G2
 
-![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
+![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png?v=af3d8989)
 
-![Task success rate under disturbances — G2 / Pen](results/figures/success_rate_disturbances/G2_Pen.png)
+![Task success rate under disturbances — G2 / Pen](results/figures/success_rate_disturbances/G2_Pen.png?v=1e01191d)
 
-![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
+![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png?v=58abb8a7)
 
 ## 3. Sim-to-Real MAE
 
 Mean absolute error between simulated and real success rates, in percentage points, averaged with equal weight over the 6 task x policy cells of each scene: MAE(scene, condition) = (1/6) Σ |100·sim_success/80 − 100·real_success/20|. Real is the Clean real measurement for every condition.
 
-![Sim-to-real MAE per scene and condition](results/figures/mae.png)
+![Sim-to-real MAE per scene and condition](results/figures/mae.png?v=fe789484)
 
 Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 ## 4. CrossScore
 
-![CrossScore](results/figures/crossscore.png)
+![CrossScore](results/figures/crossscore.png?v=1c12324c)
 
 ## 5. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
 Full-reference scores on the held-out test views, per scene and condition.
 
-![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/nvs_metrics.png)
+![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/nvs_metrics.png?v=63b6e4a7)
 
 PSNR in dB (↑), SSIM (↑), LPIPS (↓).
 

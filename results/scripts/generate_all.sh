@@ -10,3 +10,4 @@ python3 plot_disturbance_highlights.py
 python3 plot_mae.py
 python3 plot_crossscore.py
 python3 plot_novel_view_metrics.py
+python3 stamp_readme_images.py

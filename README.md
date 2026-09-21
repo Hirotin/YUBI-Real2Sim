@@ -2,17 +2,7 @@
 
 ## Task Success Rate: Real Robot vs. Clean Sim
 
-### Duo
-
-![Task success rate: real vs. clean sim — Duo](results/figures/success_rate_overall/Duo.png)
-
-### Flat
-
-![Task success rate: real vs. clean sim — Flat](results/figures/success_rate_overall/Flat.png)
-
-### G2
-
-![Task success rate: real vs. clean sim — G2](results/figures/success_rate_overall/G2.png)
+![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
 
 - CSVs: [`results/data/success_rate_overall/`](results/data/success_rate_overall)
 - Script: [`results/scripts/plot_success_rate_overall.py`](results/scripts/plot_success_rate_overall.py)
@@ -87,8 +77,8 @@ chart (matching the paper's counterfactual significance plots). Each
 drop into the paper.
 
 Each figure above is generated from CSVs. `success_rate_overall/` and
-`success_rate_disturbances/` produce one figure per CSV file found in their
-directory (one per scene, and one per scene/task pair, respectively) — drop
+`success_rate_disturbances/` pick up every CSV file found in their
+directory (one panel per scene, and one figure per scene/task pair, respectively) — drop
 in a new CSV there to get a new figure with no script changes. To update a
 result, add/edit the relevant CSV(s) and run:
 

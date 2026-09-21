@@ -1,26 +1,26 @@
 # ICRA 2027 Real2Sim — Supplementary Results
 
-## Task Success Rate: Real Robot vs. Clean Sim
+## 1. Task Success Rate: Real Robot vs. Clean Sim
 
 ![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
 
-## Task Success Rate under Disturbances
+## 2. Task Success Rate under Disturbances
 
 Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance.
 
-### Significant under Clean, not under the disturbance
+### 2.1 Significant under Clean, not under the disturbance
 
 ![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png)
 
-### Not significant under Clean, significant under the disturbance
+### 2.2 Not significant under Clean, significant under the disturbance
 
 ![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
 
-### Policy ranking reversed by the disturbance
+### 2.3 Policy ranking reversed by the disturbance
 
 ![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
 
-### All results: Duo
+### 2.4 All results: Duo
 
 ![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
 
@@ -28,7 +28,7 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
 
-### All results: Flat
+### 2.5 All results: Flat
 
 ![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
 
@@ -36,7 +36,7 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
 
-### All results: G2
+### 2.6 All results: G2
 
 ![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
 
@@ -44,11 +44,11 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
-## Reconstruction Quality (MAE / CrossScore)
+## 3. Reconstruction Quality (MAE / CrossScore)
 
 ![Reconstruction quality: MAE and CrossScore](results/figures/reconstruction_metrics.png)
 
-## Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
+## 4. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
 ![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
 

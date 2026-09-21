@@ -42,7 +42,7 @@ Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 Full-reference scores on the held-out test views, per scene and condition.
 
-![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/nvs_metrics.png)
+![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/nvs_lines.png)
 
 PSNR in dB (↑), SSIM (↑), LPIPS (↓).
 

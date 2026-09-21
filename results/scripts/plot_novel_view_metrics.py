@@ -35,7 +35,7 @@ from style import (
 )
 
 DEFAULT_CSV = Path(__file__).resolve().parents[1] / "data" / "novel_view_metrics.csv"
-DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "nvs_metrics.png"
+DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "nvs_lines.png"
 
 README = Path(__file__).resolve().parents[2] / "README.md"
 

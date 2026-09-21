@@ -115,6 +115,13 @@ def plot(summary, output_path):
     fig, ax = plt.subplots(figsize=(5.2, 3.3))
     fig.subplots_adjust(left=0.115, right=0.985, bottom=0.11, top=0.81)
 
+    # each scene's Clean value carried across the plot, so every disturbed
+    # point reads as a difference from it
+    reference = next((c for c in conditions if family(c) == "Clean"), None)
+    for scene in scenes:
+        if reference and (reference, scene) in lookup:
+            ax.axhline(lookup[(reference, scene)], color=FAMILY_COLORS["Clean"], linewidth=0.7,
+                       linestyle=(0, (2, 2)), alpha=0.6, zorder=1)
     for scene in scenes:
         points = [(slots[c], lookup[(c, scene)]) for c in conditions if (c, scene) in lookup]
         ax.plot(*zip(*points), color="#9aa0a6", linewidth=0.6, alpha=0.7, zorder=1)

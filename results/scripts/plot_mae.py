@@ -23,29 +23,14 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 
-from style import REAL_COLOR, RIG_NAMES, apply_icra_style, savefig, style_axes
+from style import apply_icra_style, condition_legends, draw_condition_traces, savefig, style_axes
 
 RESULTS = Path(__file__).resolve().parents[1]
 OVERALL_DIR = RESULTS / "data" / "success_rate_overall"
 DISTURBANCES_DIR = RESULTS / "data" / "success_rate_disturbances"
 DEFAULT_TABLE = RESULTS / "data" / "mae.csv"
 DEFAULT_OUTPUT = RESULTS / "figures" / "mae.png"
-
-# disturbance types, by condition-name prefix; Clean/artifact/view-reduction
-# keep the colors the paper's counterfactual figure gives them
-FAMILIES = [("Clean", "Clean"), ("hole", "Hole"), ("float", "Floater"), ("tablegeo", "Warping"),
-            ("fov", "View reduction"), ("pinhole", "View reduction")]
-FAMILY_COLORS = {"Clean": "#1d4ed8", "Hole": "#b91c1c", "Floater": "#d97706",
-                 "Warping": "#7c3aed", "View reduction": "#4a4a4a"}
-MARKERS = ["o", "s", "^", "D", "v"]
-# ticks that would otherwise collide; anything not listed keeps its derived label
-SHORT_LABELS = {"hole_54": "54\u00b0", "hole_90": "90\u00b0", "float_low8": "low",
-                "float_mid8": "mid", "float_high8": "high", "fov_center": "center",
-                "pinhole_adjacent_remove_30": "adj.", "pinhole_random_remove_30": "rand."}
-
 
 def load_rows(path):
     with open(path, newline="") as f:
@@ -78,77 +63,18 @@ def compute():
     return summary
 
 
-def family(condition):
-    for prefix, name in FAMILIES:
-        if condition.startswith(prefix):
-            return name
-    return "Other"
-
-
-def short_label(condition):
-    """The disturbance type is already in the color legend, so the tick only
-    carries what tells conditions of one type apart."""
-    for prefix, _ in FAMILIES:
-        if condition.startswith(prefix):
-            rest = condition[len(prefix):].strip("_").replace("_remove_", " ").replace("_", " ")
-            return SHORT_LABELS.get(condition, rest)
-    return condition
-
-
 def plot(summary, output_path):
-    """Conditions run across the page, MAE runs up it. Markers are colored by
-    disturbance type and shaped by scene; a faint trace follows each scene across
-    the conditions."""
     conditions = list(dict.fromkeys(r["condition"] for r in summary))
     scenes = list(dict.fromkeys(r["scene"] for r in summary))
     lookup = {(r["condition"], r["scene"]): r["mae_pp"] for r in summary}
 
-    # one slot per condition, with a gap between disturbance types
-    slots, x, last = {}, 0.0, None
-    for condition in conditions:
-        if last is not None and family(condition) != last:
-            x += 0.6
-        slots[condition] = x
-        last, x = family(condition), x + 1
-
     apply_icra_style()
     fig, ax = plt.subplots(figsize=(5.2, 3.3))
     fig.subplots_adjust(left=0.115, right=0.985, bottom=0.11, top=0.81)
-
-    # each scene's Clean value carried across the plot, so every disturbed
-    # point reads as a difference from it
-    reference = next((c for c in conditions if family(c) == "Clean"), None)
-    for scene in scenes:
-        if reference and (reference, scene) in lookup:
-            ax.axhline(lookup[(reference, scene)], color=FAMILY_COLORS["Clean"], linewidth=0.7,
-                       linestyle=(0, (2, 2)), alpha=0.6, zorder=1)
-    for scene in scenes:
-        points = [(slots[c], lookup[(c, scene)]) for c in conditions if (c, scene) in lookup]
-        ax.plot(*zip(*points), color="#9aa0a6", linewidth=0.6, alpha=0.7, zorder=1)
-    for condition in conditions:
-        colour = FAMILY_COLORS.get(family(condition), REAL_COLOR)
-        for i, scene in enumerate(scenes):
-            if (condition, scene) in lookup:
-                ax.plot([slots[condition]], [lookup[(condition, scene)]], MARKERS[i % len(MARKERS)],
-                        color=colour, markersize=5.6, markeredgecolor="white",
-                        markeredgewidth=0.5, zorder=3)
-
-    ax.set_xticks([slots[c] for c in conditions], [short_label(c) for c in conditions])
-    ax.set_xlim(-0.7, max(slots.values()) + 0.7)
+    draw_condition_traces(ax, conditions, scenes, lookup)
     ax.set_ylim(0, max(r["mae_pp"] for r in summary) * 1.08)
     style_axes(ax, ylabel="Sim-to-real MAE (pp) \u2193")
-
-    scene_handles = [Line2D([], [], color="#4a4a4a", marker=MARKERS[i % len(MARKERS)],
-                            linestyle="None", markersize=5.2, label=RIG_NAMES.get(s, s))
-                     for i, s in enumerate(scenes)]
-    present = list(dict.fromkeys(family(c) for c in conditions))
-    family_handles = [Patch(facecolor=FAMILY_COLORS.get(f, REAL_COLOR), label=f) for f in present]
-    fig.legend(handles=scene_handles, loc="upper center", bbox_to_anchor=(0.55, 1.0),
-               ncol=len(scene_handles), frameon=False, fontsize=8, handletextpad=0.3,
-               columnspacing=1.4)
-    fig.legend(handles=family_handles, loc="upper center", bbox_to_anchor=(0.55, 0.93),
-               ncol=len(family_handles), frameon=False, fontsize=7.4, handlelength=1.3,
-               handletextpad=0.4, columnspacing=1.1)
+    condition_legends(fig, conditions, scenes)
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
 

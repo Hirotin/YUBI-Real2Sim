@@ -1,0 +1,13 @@
+task,condition,success_rate,num_trials
+Cup,Real (pi_1),0.4,20
+Cup,Real (pi_2),0.8,20
+Cup,Sim (pi_1),0.225,80
+Cup,Sim (pi_2),0.5875,80
+Tape,Real (pi_1),1.0,20
+Tape,Real (pi_2),0.8,20
+Tape,Sim (pi_1),0.1875,80
+Tape,Sim (pi_2),0.175,80
+Pen,Real (pi_1),0.95,20
+Pen,Real (pi_2),0.35,20
+Pen,Sim (pi_1),0.6,80
+Pen,Sim (pi_2),0.0,80

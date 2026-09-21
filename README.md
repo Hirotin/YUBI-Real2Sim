@@ -2,16 +2,48 @@
 
 ## Task Success Rate: Real Robot vs. Clean Sim
 
-![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
+### Duo
 
-- CSV: [`results/data/success_rate_overall.csv`](results/data/success_rate_overall.csv)
+![Task success rate: real vs. clean sim — Duo](results/figures/success_rate_overall/Duo.png)
+
+### Flat
+
+![Task success rate: real vs. clean sim — Flat](results/figures/success_rate_overall/Flat.png)
+
+### G2
+
+![Task success rate: real vs. clean sim — G2](results/figures/success_rate_overall/G2.png)
+
+- CSVs: [`results/data/success_rate_overall/`](results/data/success_rate_overall)
 - Script: [`results/scripts/plot_success_rate_overall.py`](results/scripts/plot_success_rate_overall.py)
 
 ## Task Success Rate under Disturbances
 
-![Task success rate under disturbances](results/figures/success_rate_disturbances.png)
+### Duo
 
-- CSV: [`results/data/success_rate_disturbances.csv`](results/data/success_rate_disturbances.csv)
+![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
+
+![Task success rate under disturbances — Duo / Pen](results/figures/success_rate_disturbances/Duo_Pen.png)
+
+![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
+
+### Flat
+
+![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
+
+![Task success rate under disturbances — Flat / Pen](results/figures/success_rate_disturbances/Flat_Pen.png)
+
+![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
+
+### G2
+
+![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
+
+![Task success rate under disturbances — G2 / Pen](results/figures/success_rate_disturbances/G2_Pen.png)
+
+![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
+
+- CSVs: [`results/data/success_rate_disturbances/`](results/data/success_rate_disturbances)
 - Script: [`results/scripts/plot_success_rate_disturbances.py`](results/scripts/plot_success_rate_disturbances.py)
 
 ## Reconstruction Quality (MAE / CrossScore)
@@ -30,10 +62,22 @@
 
 ---
 
-Each figure above is generated from its CSV. To update a result, fill in the
-corresponding CSV under `results/data/` and run:
+Each figure above is generated from CSVs. `success_rate_overall/` and
+`success_rate_disturbances/` produce one figure per CSV file found in their
+directory (one per scene, and one per scene/task pair, respectively) — drop
+in a new CSV there to get a new figure with no script changes. To update a
+result, add/edit the relevant CSV(s) and run:
 
 ```bash
 pip install -r results/scripts/requirements.txt
+bash results/scripts/generate_all.sh
+```
+
+`results/scripts/ingest_policy_success.py` converts the raw per-trial policy
+success log into the `success_rate_overall/` and `success_rate_disturbances/`
+CSVs above:
+
+```bash
+python3 results/scripts/ingest_policy_success.py --input <path/to/policy_success_all_conditions.csv>
 bash results/scripts/generate_all.sh
 ```

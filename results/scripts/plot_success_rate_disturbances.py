@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Plot task success rate under each disturbance type.
 
-CSV schema (results/data/success_rate_disturbances.csv):
+One figure is produced per CSV found in results/data/success_rate_disturbances/.
+Each CSV is one (scene, task) pair; drop in a new <scene>_<task>.csv to get a
+new figure with no script changes.
+
+CSV schema (results/data/success_rate_disturbances/<scene>_<task>.csv):
     disturbance,condition,success_rate,num_trials
 
     disturbance    name of the disturbance / perturbation type
-    condition      e.g. "Real" or "Sim (Clean)"
+    condition      series label, e.g. "Real (pi_1)" / "Sim (pi_2)"
     success_rate   fraction in [0, 1]
     num_trials     number of trials the rate is computed from (optional)
 
-If the CSV has no data rows yet, the existing placeholder figure is left
-untouched.
+A CSV with no data rows is skipped.
 """
 
 import argparse
@@ -21,8 +24,8 @@ import numpy as np
 
 from style import assign_colors, bar_value_labels, legend, new_figure, savefig, style_axes
 
-DEFAULT_CSV = Path(__file__).resolve().parents[1] / "data" / "success_rate_disturbances.csv"
-DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "success_rate_disturbances.png"
+DEFAULT_DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "success_rate_disturbances"
+DEFAULT_FIGURE_DIR = Path(__file__).resolve().parents[1] / "figures" / "success_rate_disturbances"
 
 
 def load_rows(csv_path):
@@ -30,7 +33,7 @@ def load_rows(csv_path):
         return list(csv.DictReader(f))
 
 
-def plot(rows, output_path):
+def plot(rows, label, output_path):
     disturbances = list(dict.fromkeys(r["disturbance"] for r in rows))
     conditions = list(dict.fromkeys(r["condition"] for r in rows))
     colors = assign_colors(conditions)
@@ -52,9 +55,9 @@ def plot(rows, output_path):
         bar_value_labels(ax, bars)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(disturbances, rotation=15, ha="right")
+    ax.set_xticklabels(disturbances, rotation=20, ha="right")
     ax.set_ylim(0, 100)
-    style_axes(ax, ylabel="Success rate (%)", title="Task Success Rate under Disturbances")
+    style_axes(ax, ylabel="Success rate (%)", title=f"Task Success Rate under Disturbances — {label}")
     legend(ax, ncol=len(conditions))
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
@@ -62,15 +65,23 @@ def plot(rows, output_path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--csv", default=DEFAULT_CSV, type=Path)
-    parser.add_argument("--output", default=DEFAULT_OUTPUT, type=Path)
+    parser.add_argument("--data-dir", default=DEFAULT_DATA_DIR, type=Path)
+    parser.add_argument("--figure-dir", default=DEFAULT_FIGURE_DIR, type=Path)
     args = parser.parse_args()
 
-    rows = load_rows(args.csv)
-    if not rows:
-        print(f"No data rows in {args.csv}; keeping existing placeholder at {args.output}.")
+    csv_paths = sorted(args.data_dir.glob("*.csv"))
+    if not csv_paths:
+        print(f"No CSVs found in {args.data_dir}; nothing to do.")
         return
-    plot(rows, args.output)
+
+    args.figure_dir.mkdir(parents=True, exist_ok=True)
+    for csv_path in csv_paths:
+        rows = load_rows(csv_path)
+        if not rows:
+            print(f"No data rows in {csv_path}; skipping.")
+            continue
+        label = csv_path.stem.replace("_", " / ")
+        plot(rows, label, args.figure_dir / f"{csv_path.stem}.png")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,12 @@
 Used once per figure to seed results/figures/*.png before the corresponding
 CSV in results/data/ has been filled in. The real plot_*.py script for that
 figure overwrites the placeholder in place once the CSV has data.
+
+Only covers the still-single-CSV figures (reconstruction_metrics,
+novel_view_metrics). success_rate_overall/ and success_rate_disturbances/
+are glob-based directories of per-scene (or per-scene/task) CSVs -- an empty
+directory there just means the corresponding plot_*.py script has nothing to
+draw yet, so no placeholder image is needed.
 """
 
 import argparse
@@ -63,16 +69,6 @@ def make_placeholder(title, csv_path, output_path, figsize=(7, 4.5)):
 
 
 PLACEHOLDERS = [
-    (
-        "Task Success Rate: Real vs. Clean Sim",
-        "results/data/success_rate_overall.csv",
-        "results/figures/success_rate_overall.png",
-    ),
-    (
-        "Task Success Rate under Disturbances",
-        "results/data/success_rate_disturbances.csv",
-        "results/figures/success_rate_disturbances.png",
-    ),
     (
         "Reconstruction Quality (MAE / CrossScore)",
         "results/data/reconstruction_metrics.csv",

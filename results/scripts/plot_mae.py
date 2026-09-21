@@ -40,6 +40,10 @@ FAMILIES = [("Clean", "Clean"), ("hole", "Hole"), ("float", "Floater"), ("tableg
 FAMILY_COLORS = {"Clean": "#1d4ed8", "Hole": "#b91c1c", "Floater": "#d97706",
                  "Warping": "#7c3aed", "View reduction": "#4a4a4a"}
 MARKERS = ["o", "s", "^", "D", "v"]
+# ticks that would otherwise collide; anything not listed keeps its derived label
+SHORT_LABELS = {"hole_54": "54\u00b0", "hole_90": "90\u00b0", "float_low8": "low",
+                "float_mid8": "mid", "float_high8": "high", "fov_center": "center",
+                "pinhole_adjacent_remove_30": "adj.", "pinhole_random_remove_30": "rand."}
 
 
 def load_rows(path):
@@ -80,48 +84,54 @@ def family(condition):
     return "Other"
 
 
+def short_label(condition):
+    """The disturbance type is already in the color legend, so the tick only
+    carries what tells conditions of one type apart."""
+    for prefix, _ in FAMILIES:
+        if condition.startswith(prefix):
+            rest = condition[len(prefix):].strip("_").replace("_remove_", " ").replace("_", " ")
+            return SHORT_LABELS.get(condition, rest)
+    return condition
+
+
 def plot(summary, output_path):
-    """Conditions run down the page, MAE runs across it. Each condition is one
-    line spanning its scenes, colored by disturbance type; each scene has its
-    own marker and a faint trace so it can be followed down the conditions."""
+    """Conditions run across the page, MAE runs up it. Each condition is one
+    vertical line spanning its scenes, colored by disturbance type; each scene
+    has its own marker and a faint trace so it can be followed across."""
     conditions = list(dict.fromkeys(r["condition"] for r in summary))
     scenes = list(dict.fromkeys(r["scene"] for r in summary))
     lookup = {(r["condition"], r["scene"]): r["mae_pp"] for r in summary}
 
     # one slot per condition, with a gap between disturbance types
-    slots, y, last = {}, 0.0, None
+    slots, x, last = {}, 0.0, None
     for condition in conditions:
         if last is not None and family(condition) != last:
-            y += 0.6
-        slots[condition] = y
-        last, y = family(condition), y + 1
+            x += 0.6
+        slots[condition] = x
+        last, x = family(condition), x + 1
 
     apply_icra_style()
-    fig, ax = plt.subplots(figsize=(5.2, 3.9))
-    fig.subplots_adjust(left=0.245, right=0.975, bottom=0.115, top=0.84)
+    fig, ax = plt.subplots(figsize=(5.2, 3.3))
+    fig.subplots_adjust(left=0.115, right=0.985, bottom=0.11, top=0.81)
 
-    for i, scene in enumerate(scenes):
-        points = [(lookup[(c, scene)], slots[c]) for c in conditions if (c, scene) in lookup]
+    for scene in scenes:
+        points = [(slots[c], lookup[(c, scene)]) for c in conditions if (c, scene) in lookup]
         ax.plot(*zip(*points), color="#9aa0a6", linewidth=0.6, alpha=0.7, zorder=1)
     for condition in conditions:
         colour = FAMILY_COLORS.get(family(condition), REAL_COLOR)
         values = [lookup[(condition, s)] for s in scenes if (condition, s) in lookup]
-        ax.plot([min(values), max(values)], [slots[condition]] * 2, color=colour, linewidth=1.4,
+        ax.plot([slots[condition]] * 2, [min(values), max(values)], color=colour, linewidth=1.4,
                 alpha=0.55, zorder=2, solid_capstyle="butt")
         for i, scene in enumerate(scenes):
             if (condition, scene) in lookup:
-                ax.plot([lookup[(condition, scene)]], [slots[condition]], MARKERS[i % len(MARKERS)],
+                ax.plot([slots[condition]], [lookup[(condition, scene)]], MARKERS[i % len(MARKERS)],
                         color=colour, markersize=5.6, markeredgecolor="white",
                         markeredgewidth=0.5, zorder=3)
 
-    ax.set_yticks([slots[c] for c in conditions],
-                  [c.replace("_remove_", " ").replace("pinhole_", "pinhole ") for c in conditions])
-    ax.set_ylim(max(slots.values()) + 0.8, -0.8)
-    ax.set_xlim(0, max(r["mae_pp"] for r in summary) * 1.06)
-    ax.set_xlabel("Sim-to-real MAE (pp) \u2193", labelpad=3)
-    style_axes(ax, grid_axis="x")
-    ax.tick_params(axis="y", length=0, pad=4)
-    ax.tick_params(axis="x", length=3, color="#666666")
+    ax.set_xticks([slots[c] for c in conditions], [short_label(c) for c in conditions])
+    ax.set_xlim(-0.7, max(slots.values()) + 0.7)
+    ax.set_ylim(0, max(r["mae_pp"] for r in summary) * 1.08)
+    style_axes(ax, ylabel="Sim-to-real MAE (pp) \u2193")
 
     scene_handles = [Line2D([], [], color="#4a4a4a", marker=MARKERS[i % len(MARKERS)],
                             linestyle="None", markersize=5.2, label=RIG_NAMES.get(s, s))
@@ -129,10 +139,10 @@ def plot(summary, output_path):
     present = list(dict.fromkeys(family(c) for c in conditions))
     family_handles = [Line2D([], [], color=FAMILY_COLORS.get(f, REAL_COLOR), linewidth=2.2, label=f)
                       for f in present]
-    fig.legend(handles=scene_handles, loc="upper center", bbox_to_anchor=(0.6, 1.0),
+    fig.legend(handles=scene_handles, loc="upper center", bbox_to_anchor=(0.55, 1.0),
                ncol=len(scene_handles), frameon=False, fontsize=8, handletextpad=0.3,
                columnspacing=1.4)
-    fig.legend(handles=family_handles, loc="upper center", bbox_to_anchor=(0.6, 0.94),
+    fig.legend(handles=family_handles, loc="upper center", bbox_to_anchor=(0.55, 0.93),
                ncol=len(family_handles), frameon=False, fontsize=7.4, handlelength=1.3,
                handletextpad=0.4, columnspacing=1.1)
     savefig(fig, output_path)

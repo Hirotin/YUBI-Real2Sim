@@ -60,7 +60,24 @@ Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 Full-reference scores on the held-out test views, per scene and condition.
 
-![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
+![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/nvs_metrics.png)
+
+PSNR in dB (↑), SSIM (↑), LPIPS (↓).
+
+<!-- nvs-table:start -->
+| Condition | PSNR FR3 Duo | PSNR FR3 Flat | PSNR G2 | SSIM FR3 Duo | SSIM FR3 Flat | SSIM G2 | LPIPS FR3 Duo | LPIPS FR3 Flat | LPIPS G2 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Clean | 18.55 | 18.13 | 16.52 | 0.738 | 0.716 | 0.718 | 0.227 | 0.230 | 0.276 |
+| hole_54 | 13.90 | 14.57 | 14.36 | 0.582 | 0.594 | 0.642 | 0.387 | 0.352 | 0.357 |
+| hole_90 | 9.63 | 10.21 | 10.85 | 0.377 | 0.394 | 0.488 | 0.615 | 0.578 | 0.554 |
+| float_low8 | 18.33 | 18.10 | 16.35 | 0.730 | 0.711 | 0.712 | 0.242 | 0.240 | 0.291 |
+| float_mid8 | 18.40 | 18.16 | 16.39 | 0.731 | 0.713 | 0.713 | 0.242 | 0.239 | 0.292 |
+| float_high8 | 18.50 | 18.16 | 16.38 | 0.733 | 0.712 | 0.712 | 0.240 | 0.240 | 0.290 |
+| tablegeo_s1 | 18.17 | 17.78 | 16.41 | 0.719 | 0.700 | 0.708 | 0.236 | 0.237 | 0.284 |
+| fov_center | 15.46 | 15.42 | 14.90 | 0.585 | 0.547 | 0.638 | 0.336 | 0.351 | 0.341 |
+| pinhole_adjacent_remove_30 | 14.91 | 14.79 | 13.72 | 0.527 | 0.476 | 0.549 | 0.384 | 0.407 | 0.406 |
+| pinhole_random_remove_30 | 15.46 | 15.08 | 14.58 | 0.578 | 0.529 | 0.617 | 0.349 | 0.372 | 0.354 |
+<!-- nvs-table:end -->
 
 Values: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
 

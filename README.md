@@ -1,59 +1,39 @@
-# YUBI-Real2Sim
+# ICRA 2027 Real2Sim — Supplementary Results
 
-Real-to-simulation research project for the YUBI robotic platform.
+## Task Success Rate: Real Robot vs. Clean Sim
 
-This repository is intended to collect the tools and experiments needed to
-connect real-world YUBI data with a simulated robot environment. The goal is
-to make calibration, data conversion, policy replay, and real-to-sim
-evaluation reproducible.
+![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
 
-> **Status:** Early development. The repository is currently being initialized
-> and does not yet contain a runnable pipeline.
+- CSV: [`results/data/success_rate_overall.csv`](results/data/success_rate_overall.csv)
+- Script: [`results/scripts/plot_success_rate_overall.py`](results/scripts/plot_success_rate_overall.py)
 
-## Project goals
+## Task Success Rate under Disturbances
 
-- Transfer observations, actions, and trajectories between the real robot and simulation.
-- Reconstruct or register the relevant scene and robot geometry.
-- Evaluate robot policies in simulation before real-world execution.
-- Keep experiment configurations, results, and provenance easy to reproduce.
+![Task success rate under disturbances](results/figures/success_rate_disturbances.png)
 
-## Planned components
+- CSV: [`results/data/success_rate_disturbances.csv`](results/data/success_rate_disturbances.csv)
+- Script: [`results/scripts/plot_success_rate_disturbances.py`](results/scripts/plot_success_rate_disturbances.py)
 
-The project structure will be introduced as the implementation grows:
+## Reconstruction Quality (MAE / CrossScore)
 
-```text
-YUBI-Real2Sim/
-├── src/       # Core conversion, calibration, and simulation code
-├── scripts/   # Reproducible setup and experiment commands
-├── configs/   # Experiment and environment configurations
-├── docs/      # Design notes and experiment documentation
-└── outputs/   # Local experiment results (not committed)
-```
+![Reconstruction quality: MAE and CrossScore](results/figures/reconstruction_metrics.png)
 
-Large datasets, checkpoints, scene captures, and other generated assets should
-be kept outside Git and documented with their source and checksums.
+- CSV: [`results/data/reconstruction_metrics.csv`](results/data/reconstruction_metrics.csv)
+- Script: [`results/scripts/plot_reconstruction_metrics.py`](results/scripts/plot_reconstruction_metrics.py)
 
-## Getting started
+## Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
-Clone the repository:
+![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
+
+- CSV: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
+- Script: [`results/scripts/plot_novel_view_metrics.py`](results/scripts/plot_novel_view_metrics.py)
+
+---
+
+Each figure above is generated from its CSV. To update a result, fill in the
+corresponding CSV under `results/data/` and run:
 
 ```bash
-git clone git@github.com:Hirotin/YUBI-Real2Sim.git
-cd YUBI-Real2Sim
+pip install -r results/scripts/requirements.txt
+bash results/scripts/generate_all.sh
 ```
-
-The setup instructions and dependency versions will be added together with
-the first runnable implementation.
-
-## Roadmap
-
-1. Define the real and simulated data formats.
-2. Add robot and scene calibration utilities.
-3. Implement real-to-sim trajectory and observation conversion.
-4. Add policy replay and evaluation scripts.
-5. Document reproducible experiments and benchmark results.
-
-## License
-
-License information will be added before the first public release.
-

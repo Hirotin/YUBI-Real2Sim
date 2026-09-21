@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Plot novel-view synthesis quality on the test set (PSNR, SSIM, LPIPS) per scene.
+"""Plot novel-view synthesis quality on the test set (PSNR, SSIM, LPIPS) per
+scene and condition.
 
 CSV schema (results/data/novel_view_metrics.csv):
-    scene,PSNR,SSIM,LPIPS
+    condition,scene,views,PSNR,SSIM,LPIPS
 
-Each metric lives on its own scale, so each gets its own panel (small
-multiples) rather than a shared/dual axis. Bars are colored per scene with
-the same palette as the paper's Fig. 3 (Duo/Flat/G2), so a scene carries the
-same color across every figure in this repo.
+Each metric lives on its own scale, so each gets its own panel rather than a
+shared/dual axis; the panels share the condition axis. Scenes use the same
+palette as the paper's Fig. 3 (Duo/Flat/G2).
 
 If the CSV has no data rows yet, the existing placeholder figure is left
 untouched.
@@ -22,12 +22,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from style import REAL_COLOR, SCENE_COLORS, apply_icra_style, savefig, style_axes
+from style import REAL_COLOR, RIG_NAMES, SCENE_COLORS, apply_icra_style, savefig, style_axes
 
 DEFAULT_CSV = Path(__file__).resolve().parents[1] / "data" / "novel_view_metrics.csv"
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "novel_view_metrics.png"
 
-METRICS = ["PSNR", "SSIM", "LPIPS"]
+METRICS = [("PSNR", "PSNR (dB) ↑", "{:.1f}"), ("SSIM", "SSIM ↑", "{:.2f}"),
+           ("LPIPS", "LPIPS ↓", "{:.2f}")]
 
 
 def load_rows(csv_path):
@@ -36,25 +37,35 @@ def load_rows(csv_path):
 
 
 def plot(rows, output_path):
-    scenes = [r["scene"] for r in rows]
-    colors = [SCENE_COLORS.get(s, REAL_COLOR) for s in scenes]
+    conditions = list(dict.fromkeys(r["condition"] for r in rows))
+    scenes = list(dict.fromkeys(r["scene"] for r in rows))
+    lookup = {(r["condition"], r["scene"]): r for r in rows}
 
     apply_icra_style()
-    fig, axes = plt.subplots(1, len(METRICS), figsize=(max(7.2, 1.9 * len(scenes) * len(METRICS)), 3.0))
-    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.16, top=0.86, wspace=0.3)
-
-    for ax, metric in zip(axes, METRICS):
-        heights = [float(r[metric]) for r in rows]
-        bars = ax.bar(scenes, heights, color=colors, zorder=2)
-        for bar, h in zip(bars, heights):
-            ax.annotate(
-                f"{h:.3f}", xy=(bar.get_x() + bar.get_width() / 2, h), xytext=(0, 3),
-                textcoords="offset points", ha="center", va="bottom", fontsize=7,
-            )
-        style_axes(ax, ylabel=metric)
-        ax.set_title(metric, loc="left", fontsize=9, pad=4)
-
-    fig.suptitle("Novel View Synthesis Quality (Test Set)", x=0.01, ha="left", fontsize=9.5, y=0.995)
+    fig, axes = plt.subplots(len(METRICS), 1, figsize=(7.16, 1.75 * len(METRICS) + 0.9), sharex=True)
+    fig.subplots_adjust(left=0.085, right=0.992, bottom=0.13, top=0.95, hspace=0.22)
+    width = 0.8 / len(scenes)
+    for ax, (metric, label, fmt) in zip(axes, METRICS):
+        top = 0.0
+        for i, scene in enumerate(scenes):
+            present = [(j, float(lookup[(c, scene)][metric])) for j, c in enumerate(conditions)
+                       if (c, scene) in lookup]
+            xs = [j - 0.4 + width / 2 + i * width for j, _ in present]
+            ys = [y for _, y in present]
+            ax.bar(xs, ys, width, color=SCENE_COLORS.get(scene, REAL_COLOR), edgecolor="white",
+                   linewidth=0.4, label=RIG_NAMES.get(scene, scene), zorder=2)
+            top = max([top] + ys)
+            for x, y in zip(xs, ys):
+                ax.annotate(fmt.format(y), (x, y), xytext=(0, 1.5), textcoords="offset points",
+                            ha="center", va="bottom", fontsize=5.4, rotation=90)
+        ax.set_ylim(0, top * 1.28)
+        ax.set_xlim(-0.55, len(conditions) - 0.45)
+        style_axes(ax, ylabel=label)
+    labels = [c.replace("_remove_", " ").replace("pinhole_", "pinhole ") for c in conditions]
+    axes[-1].set_xticks(range(len(conditions)), labels, rotation=28, ha="right")
+    handles, names = axes[0].get_legend_handles_labels()
+    fig.legend(handles, names, loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=len(scenes),
+               frameon=False, fontsize=8.5, handlelength=1.5, columnspacing=1.6)
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
 

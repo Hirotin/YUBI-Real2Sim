@@ -5,8 +5,7 @@ Used once per figure to seed results/figures/*.png before the corresponding
 CSV in results/data/ has been filled in. The real plot_*.py script for that
 figure overwrites the placeholder in place once the CSV has data.
 
-Only covers the still-single-CSV figures (crossscore,
-novel_view_metrics). success_rate_overall/ and success_rate_disturbances/
+Only covers the still-single-CSV figures (crossscore). success_rate_overall/ and success_rate_disturbances/
 are glob-based directories of per-scene (or per-scene/task) CSVs -- an empty
 directory there just means the corresponding plot_*.py script has nothing to
 draw yet, so no placeholder image is needed.
@@ -75,11 +74,6 @@ PLACEHOLDERS = [
         "CrossScore",
         "results/data/crossscore.csv",
         "results/figures/crossscore.png",
-    ),
-    (
-        "Novel View Synthesis Quality (PSNR / SSIM / LPIPS)",
-        "results/data/novel_view_metrics.csv",
-        "results/figures/novel_view_metrics.png",
     ),
 ]
 

@@ -58,7 +58,11 @@ Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 ## 5. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
+Full-reference scores on the held-out test views, per scene and condition.
+
 ![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
+
+Values: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
 
 ---
 

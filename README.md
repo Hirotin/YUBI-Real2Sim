@@ -91,6 +91,70 @@ Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean 
 
 ![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
+## 7. Supplementary Analysis of Table II: Constant Baselines and Fold-wise Class Support
+
+This section supplements Table II and Sec. V-E of the main paper with constant-prediction baselines, the distribution of ranking-disagreement labels across scenes, and a class-wise analysis of Tape predictions. The evaluated conditions and the quality-based predictions are unchanged: every number below is recomputed from the out-of-fold prediction log behind Table II ([`results/data/reliability_predictions.csv`](results/data/reliability_predictions.csv)), without refitting.
+
+The label is the same as in the main paper: $H=0$ when the observed ranking of the two policies in simulation agrees with the real ranking, and $H=1$ when it disagrees or the two policies tie in simulation. $H$ describes the ranking of the two policies, not the success or failure of individual robot trials.
+
+### 7.1 Table S1: Extended comparison with constant-prediction baselines
+
+*Always reliable* predicts $\widehat{H}=0$ for every condition and *Always unreliable* predicts $\widehat{H}=1$; neither uses a quality score or a fitted threshold.
+
+<!-- table-s1:start -->
+| Method / view | Cup | Tape | Pen | Total | All-three |
+|---|---:|---:|---:|---:|---:|
+| Always reliable ($\widehat{H}=0$) | 8/15 | 12/15 | 15/15 | 35/45 (77.8%) | 6/15 |
+| Always unreliable ($\widehat{H}=1$) | 7/15 | 3/15 | 0/15 | 10/45 (22.2%) | 9/15 |
+| NVS-SQA / Test | 7/15 | 8/15 | 15/15 | 30/45 (66.7%) | 13/15 |
+| NVS-SQA / OBS | 12/15 | 2/15 | 15/15 | 29/45 (64.4%) | 7/15 |
+| PSNR / Test | 8/15 | 8/15 | 15/15 | 31/45 (68.9%) | 9/15 |
+| SSIM / Test | 8/15 | 9/15 | 15/15 | 32/45 (71.1%) | 7/15 |
+| LPIPS / Test | 8/15 | 5/15 | 15/15 | 28/45 (62.2%) | 10/15 |
+<!-- table-s1:end -->
+
+**Table S1. Extended comparison corresponding to Table II of the main paper.** Entries are correct/total classification decisions on the same matched conditions. The quality-based rows reproduce Table II without modification. Both constant predictors are reported without fitting to quality scores or target-scene labels. "Total" pools the 45 task-level decisions; "All-three" evaluates the separate binary target of whether all three task rankings agree with real evaluation, so for that column *Always unreliable* means "at least one task ranking disagrees", not "all three disagree". As in the main paper, All-three predictions come from a threshold fitted to the All-three labels, not from combining the three task-level predictions.
+
+The SSIM result of 32/45 in Sec. V-E is the highest pooled task-level accuracy among the quality-based methods listed in Table II. The expanded comparison shows that the always-reliable predictor achieves 35/45. Thus, the reported SSIM accuracy does not demonstrate an improvement over this constant predictor on the evaluated conditions. In the pooled counts the gap sits entirely in Tape:
+
+```math
+\underbrace{8-8}_{\mathrm{Cup}} + \underbrace{9-12}_{\mathrm{Tape}} + \underbrace{15-15}_{\mathrm{Pen}} = -3
+```
+
+Equal Cup counts do not imply identical individual Cup predictions. Separately, the All-three result of NVS-SQA / Test (13/15) exceeds both constant predictors (6/15 and 9/15); that result stands on its own, although 13/15 on three scenes does not by itself establish general reliability of scene acceptance.
+
+### 7.2 Fig. S1: Label layout and Tape class support
+
+![Ranking-disagreement labels and Tape class support](results/figures/reliability_labels.png)
+
+**Fig. S1. Ranking-disagreement labels and Tape class support across held-out scenes.** (a) Labels for the 15 matched scene variants, with $H=1$ denoting disagreement with the observed real ranking. Cup has 8 agreements and 7 disagreements, Tape 12 and 3, Pen 15 and 0, which gives the constant-predictor rows of Table S1. (b) Tape training and test class counts for each held-out scene. All three Tape disagreements occur in G2. When G2 is held out, the training labels are all $H=0$, so the single-class fallback in Sec. IV-B predicts $H=0$ for every G2 variant. Test labels are displayed only for retrospective analysis and are not used for fitting.
+
+The point is not that quality metrics are inherently uninformative for Tape. With this label layout and the single-class fallback, the quality score is never used in the one fold that contains Tape disagreements. Under the current protocol the Tape accuracy of any quality-based method is therefore at most 12/15, because the three G2 disagreements are always missed, and the always-reliable predictor attains that bound.
+
+### 7.3 Table S2: Tape error decomposition
+
+Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged as one, FN a missed disagreement, FP a false alarm on an agreement-labeled condition, and TN a correctly passed agreement.
+
+<!-- table-s2:start -->
+| Method / view | TP ↑ | FN ↓ | FP ↓ | TN ↑ | Balanced accuracy ↑ |
+|---|---:|---:|---:|---:|---:|
+| Always reliable | 0 | 3 | 0 | 12 | 50.0% |
+| Always unreliable | 3 | 0 | 12 | 0 | 50.0% |
+| NVS-SQA / Test | 0 | 3 | 4 | 8 | 33.3% |
+| NVS-SQA / OBS | 0 | 3 | 10 | 2 | 8.3% |
+| PSNR / Test | 0 | 3 | 4 | 8 | 33.3% |
+| SSIM / Test | 0 | 3 | 3 | 9 | 37.5% |
+| LPIPS / Test | 0 | 3 | 7 | 5 | 20.8% |
+<!-- table-s2:end -->
+
+**Table S2. Tape classification errors pooled across the three held-out-scene folds.** The evaluated set contains three disagreements and twelve agreements. Balanced accuracy is computed from the pooled out-of-fold confusion counts, not averaged over single-class test folds:
+
+```math
+\mathrm{BA} = \frac{1}{2}\left(\frac{TP}{TP+FN} + \frac{TN}{TN+FP}\right), \qquad \mathrm{BA}_{\mathrm{Tape,\,SSIM}} = \frac{1}{2}\left(\frac{0}{3} + \frac{9}{12}\right) = 37.5\%
+```
+
+All quality-based methods miss the three Tape disagreements in the G2 fold. Their Tape accuracy differences therefore arise from false alarms on agreement-labeled conditions, rather than differences in disagreement detection. For SSIM, the 9/15 result consists of nine true negatives, three false positives, and three false negatives. Pen contains no disagreement, so disagreement recall and two-class balanced accuracy are undefined (N/A) there; its 15/15 is not evidence of disagreement detection.
+
 ---
 
 Colors and fonts follow the ICRA 2026 paper's own figure scripts

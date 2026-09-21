@@ -8,17 +8,17 @@
 
 Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance.
 
-### 2.1 Significant under Clean, not under the disturbance
+### 2.1 Policy ranking reversed
+
+![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
+
+### 2.2 From significant to not significant
 
 ![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png)
 
-### 2.2 Not significant under Clean, significant under the disturbance
+### 2.3 From not significant to significant
 
 ![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
-
-### 2.3 Policy ranking reversed by the disturbance
-
-![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
 
 ### 2.4 All results: Duo
 

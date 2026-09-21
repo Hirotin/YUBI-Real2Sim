@@ -46,9 +46,9 @@ DEFAULT_FIGURE_DIR = RESULTS / "figures" / "success_rate_disturbances_highlights
 ALPHA = 0.05
 NCOLS = 4
 TITLES = {
-    "significance_lost": "Significant under Clean, not under the disturbance",
-    "significance_gained": "Not significant under Clean, significant under the disturbance",
-    "rank_reversed": "Policy ranking reversed by the disturbance",
+    "rank_reversed": "Policy ranking reversed",
+    "significance_lost": "From significant to not significant",
+    "significance_gained": "From not significant to significant",
 }
 
 

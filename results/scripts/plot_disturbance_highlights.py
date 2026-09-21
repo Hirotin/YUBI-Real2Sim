@@ -18,7 +18,6 @@ needs to be supplied. A category with no pairs writes no figure.
 
 import argparse
 import csv
-import math
 from pathlib import Path
 
 import matplotlib
@@ -91,6 +90,13 @@ def collect_pairs():
                 pairs["significance_gained"].append(pair)
             if diff_clean * diff_dist < 0:
                 pairs["rank_reversed"].append(pair)
+    order = []
+    for csv_path in sorted(DISTURBANCES_DIR.glob("*.csv")):
+        for r in load_rows(csv_path):
+            if r["disturbance"] not in order:
+                order.append(r["disturbance"])
+    for key in pairs:
+        pairs[key].sort(key=lambda p: order.index(p["disturbance"]))
     return pairs
 
 
@@ -113,27 +119,28 @@ def draw_panel(ax, pair):
                 [y - 2, y, y, y - 2], color=ERROR_BAR_COLOR, lw=0.55)
         ax.text(g, y + 1.5, p_label(p), ha="center", va="bottom", fontsize=5.6,
                 fontweight="bold" if p < ALPHA else "normal")
-    ax.set_xticks([0, 1], ["Clean", pair["disturbance"].replace("_remove_", "\nremove ")
-                           .replace("pinhole_", "pinhole ")])
+    ax.set_xticks([0, 1], ["Clean", "Disturbed"])
     ax.set_xlim(-0.6, 1.6)
     ax.set_ylim(0, 128)
     ax.set_yticks([0, 25, 50, 75, 100])
     style_axes(ax)
-    ax.tick_params(axis="x", labelsize=6.2)
+    ax.tick_params(axis="x", labelsize=6.6)
     ax.set_title(f"{RIG_NAMES.get(pair['scene'], pair['scene'])} / {pair['task']}",
-                 loc="left", fontsize=7.4, pad=3)
+                 loc="left", fontsize=7, pad=3)
+    ax.text(0, 1.17, pair["disturbance"].replace("_remove_", " ").replace("pinhole_", "pinhole "), transform=ax.transAxes, ha="left", va="bottom",
+            fontsize=7.4, fontweight="bold")
 
 
 def plot(key, pairs, output_path):
+    """Panels run in disturbance-type order; each is headed by its type."""
     apply_icra_style(base_size=7)
     ncols = min(NCOLS, len(pairs))
-    nrows = math.ceil(len(pairs) / ncols)
-    fig, axes = plt.subplots(nrows, ncols, figsize=(1.79 * ncols, 1.85 * nrows + 0.55),
-                             sharey=True, squeeze=False)
-    top = 1 - 0.55 / (1.85 * nrows + 0.55)
-    fig.subplots_adjust(left=0.42 / (1.79 * ncols) + 0.02, right=0.99,
-                        bottom=0.30 / (1.85 * nrows + 0.55) + 0.03, top=top,
-                        wspace=0.12, hspace=0.62)
+    nrows = -(-len(pairs) // ncols)
+    row_h, head = 2.0, 0.45
+    height = row_h * nrows + head
+    fig, axes = plt.subplots(nrows, ncols, figsize=(1.79 * ncols, height), sharey=True, squeeze=False)
+    fig.subplots_adjust(left=0.6 / (1.79 * ncols), right=0.99, bottom=0.3 / height,
+                        top=1 - (head + 0.4) / height, wspace=0.12, hspace=0.8)
     for ax, pair in zip(axes.flat, pairs):
         draw_panel(ax, pair)
     for ax in axes.flat[len(pairs):]:
@@ -144,8 +151,8 @@ def plot(key, pairs, output_path):
                for j, policy in enumerate(pairs[0]["policies"])]
     fig.legend(handles=handles, loc="upper right", bbox_to_anchor=(0.995, 1.0), ncol=2,
                frameon=False, fontsize=7)
-    fig.text(0.01, 1 - 0.13 / (1.85 * nrows + 0.55), f"{TITLES[key]} ({len(pairs)})",
-             ha="left", va="top", fontsize=8)
+    fig.text(0.01, 1 - 0.1 / height, f"{TITLES[key]} ({len(pairs)} pairs), by disturbance type",
+             ha="left", va="top", fontsize=8.5)
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
 

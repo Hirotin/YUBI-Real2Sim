@@ -65,7 +65,7 @@ Values: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.
 
 ## 6. Task Success Rate under Disturbances: All Results
 
-Sim success rate of pi_1 and pi_2 under every disturbance, per scene and task (the pairs highlighted in Section 2 are drawn from these).
+Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean sim result at the left as the reference, then sim under every disturbance (the pairs highlighted in Section 2 are drawn from these).
 
 ### 6.1 FR3 Duo
 

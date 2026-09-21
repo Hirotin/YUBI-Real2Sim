@@ -6,8 +6,10 @@ Style matches the paper's own counterfactual plots
 plot_cup_success_significance.py): the first policy encountered (the
 shared/generalist checkpoint) is blue, the second (the task-specific
 checkpoint) is amber, white-edged bars, and 95% Wilson-interval error bars.
-Only sim results are plotted -- disturbances were only applied in
-simulation, so there is no per-disturbance real measurement to show.
+Disturbances were only applied in simulation, so the disturbance groups are
+sim only; the real result and the Clean sim result (read from
+results/data/success_rate_overall/<scene>.csv) sit at the left as the
+reference, real in gray as in Fig. 1.
 
 One figure is produced per CSV found in
 results/data/success_rate_disturbances/. Each CSV is one (scene, task)
@@ -36,11 +38,15 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
 from style import (
-    RIG_NAMES,
-    POLICY_COLORS,
     ERROR_BAR_COLOR,
+    POLICY_ALPHAS,
+    POLICY_COLORS,
+    REAL_COLOR,
+    RIG_NAMES,
+    SPINE_COLOR,
     apply_icra_style,
     savefig,
     style_axes,
@@ -48,60 +54,82 @@ from style import (
 )
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "success_rate_disturbances"
+OVERALL_DIR = Path(__file__).resolve().parents[1] / "data" / "success_rate_overall"
 DEFAULT_FIGURE_DIR = Path(__file__).resolve().parents[1] / "figures" / "success_rate_disturbances"
 
 
 def load_rows(csv_path):
     with open(csv_path, newline="") as f:
-        return [r for r in csv.DictReader(f) if r["domain"] == "sim"]
+        return list(csv.DictReader(f))
 
 
-def plot(rows, scene, task, output_path):
-    disturbances = list(dict.fromkeys(r["disturbance"] for r in rows))
-    policies = list(dict.fromkeys(r["policy"] for r in rows))
-    policy_color = {p: POLICY_COLORS[min(i, len(POLICY_COLORS) - 1)] for i, p in enumerate(policies)}
-    lookup = {(r["disturbance"], r["policy"]): r for r in rows}
-
-    apply_icra_style()
-    fig, ax = plt.subplots(figsize=(max(4.3, 0.62 * len(disturbances) + 1.6), 3.1))
-    fig.subplots_adjust(left=0.13, right=0.97, bottom=0.28, top=0.82)
-
-    x = range(len(disturbances))
+def draw_group(ax, x, rows_by_policy, policies, colors, alphas):
     width = 0.8 / len(policies)
     for i, policy in enumerate(policies):
-        offset = -0.4 + width / 2 + i * width
-        present = [lookup.get((d, policy)) for d in disturbances]
-        positions = [j + offset for j, r in enumerate(present) if r is not None]
-        present = [r for r in present if r is not None]
-        values = [100 * float(r["success_rate"]) for r in present]
-        intervals = [wilson_interval(int(r["successes"]), int(r["num_trials"])) for r in present]
-        errors = [
-            [max(0.0, v - 100 * lo) for v, (lo, _) in zip(values, intervals)],
-            [max(0.0, 100 * hi - v) for v, (_, hi) in zip(values, intervals)],
-        ]
-        ax.bar(
-            positions, values, width, color=policy_color[policy], edgecolor="white",
-            linewidth=0.4, zorder=2,
-        )
-        ax.errorbar(
-            positions, values, yerr=errors, fmt="none", ecolor=ERROR_BAR_COLOR,
-            elinewidth=0.6, capsize=2, capthick=0.6, zorder=3,
-        )
+        r = rows_by_policy.get(policy)
+        if r is None:
+            continue
+        pos = x - 0.4 + width / 2 + i * width
+        value = 100 * float(r["success_rate"])
+        lo, hi = wilson_interval(int(r["successes"]), int(r["num_trials"]))
+        ax.bar([pos], [value], width, color=colors[i], alpha=alphas[i], edgecolor="white",
+               linewidth=0.4, zorder=2)
+        ax.errorbar([pos], [value], yerr=[[max(0.0, value - 100 * lo)], [max(0.0, 100 * hi - value)]],
+                    fmt="none", ecolor=ERROR_BAR_COLOR, elinewidth=0.6, capsize=2, capthick=0.6,
+                    zorder=3)
 
-    ax.set_xticks(list(x), disturbances, rotation=28, ha="right")
-    ax.set_xlim(-0.5, len(disturbances) - 0.5)
+
+def plot(rows, clean_rows, scene, task, output_path):
+    """Real and Clean sim sit at the left as the reference, then one group per
+    disturbance (sim only)."""
+    sim = [r for r in rows if r["domain"] == "sim"]
+    disturbances = list(dict.fromkeys(r["disturbance"] for r in sim))
+    policies = list(dict.fromkeys(r["policy"] for r in sim))
+    n = len(policies)
+    sim_colors = [POLICY_COLORS[min(i, len(POLICY_COLORS) - 1)] for i in range(n)]
+    real_alphas = [POLICY_ALPHAS[min(i, len(POLICY_ALPHAS) - 1)] for i in range(n)]
+
+    reference = [(label, {r["policy"]: r for r in clean_rows if r["domain"] == domain})
+                 for label, domain in (("Real", "real"), ("Clean", "sim"))]
+    reference = [(label, by_policy) for label, by_policy in reference if by_policy]
+    gap = 0.5 if reference else 0.0
+
+    apply_icra_style()
+    groups = len(reference) + len(disturbances)
+    fig, ax = plt.subplots(figsize=(max(4.3, 0.62 * groups + 1.6), 3.1))
+    fig.subplots_adjust(left=0.13, right=0.97, bottom=0.28, top=0.82)
+
+    ticks, labels = [], []
+    for j, (label, by_policy) in enumerate(reference):
+        real = label == "Real"
+        draw_group(ax, j, by_policy, policies, [REAL_COLOR] * n if real else sim_colors,
+                   real_alphas if real else [1.0] * n)
+        ticks.append(j)
+        labels.append(label)
+    if reference:
+        ax.axvline(len(reference) - 0.5 + gap / 2, color=SPINE_COLOR, linewidth=0.6,
+                   linestyle=(0, (3, 2)), zorder=1)
+    for j, disturbance in enumerate(disturbances):
+        x = len(reference) + gap + j
+        draw_group(ax, x, {r["policy"]: r for r in sim if r["disturbance"] == disturbance},
+                   policies, sim_colors, [1.0] * n)
+        ticks.append(x)
+        labels.append(disturbance.replace("_remove_", " ").replace("pinhole_", "pinhole "))
+
+    ax.set_xticks(ticks, labels, rotation=28, ha="right")
+    ax.set_xlim(-0.5, ticks[-1] + 0.5)
     ax.set_ylim(0, 110)
     ax.set_yticks([0, 25, 50, 75, 100])
-    style_axes(ax, ylabel="Sim success rate (%)")
+    style_axes(ax, ylabel="Success rate (%)")
     ax.set_title(f"{RIG_NAMES.get(scene, scene)} / {task}", loc="left", fontsize=9, pad=4)
 
-    handles = [
-        plt.Rectangle((0, 0), 1, 1, color=policy_color[p], label=p) for p in policies
-    ]
-    fig.legend(
-        handles=handles, loc="upper left", bbox_to_anchor=(0.02, 1.0), ncol=len(policies),
-        frameon=False, fontsize=8,
-    )
+    handles = []
+    if any(label == "Real" for label, _ in reference):
+        handles += [Patch(facecolor=REAL_COLOR, alpha=real_alphas[i], label=f"Real {p}")
+                    for i, p in enumerate(policies)]
+    handles += [Patch(facecolor=sim_colors[i], label=f"Sim {p}") for i, p in enumerate(policies)]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.02, 1.0), ncol=len(handles),
+               frameon=False, fontsize=8, handlelength=1.5, columnspacing=1.4, handletextpad=0.5)
 
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
@@ -121,11 +149,13 @@ def main():
     args.figure_dir.mkdir(parents=True, exist_ok=True)
     for csv_path in csv_paths:
         rows = load_rows(csv_path)
-        if not rows:
+        if not any(r["domain"] == "sim" for r in rows):
             print(f"No sim data rows in {csv_path}; skipping.")
             continue
         scene, task = csv_path.stem.split("_", 1)
-        plot(rows, scene, task, args.figure_dir / f"{csv_path.stem}.png")
+        overall = OVERALL_DIR / f"{scene}.csv"
+        clean_rows = [r for r in load_rows(overall) if r["task"] == task] if overall.exists() else []
+        plot(rows, clean_rows, scene, task, args.figure_dir / f"{csv_path.stem}.png")
 
 
 if __name__ == "__main__":

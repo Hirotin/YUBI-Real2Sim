@@ -1,13 +1,13 @@
-task,condition,success_rate,num_trials
-Cup,Real (pi_1),0.4,20
-Cup,Real (pi_2),0.35,20
-Cup,Sim (pi_1),0.375,80
-Cup,Sim (pi_2),0.7375,80
-Tape,Real (pi_1),0.95,20
-Tape,Real (pi_2),0.05,20
-Tape,Sim (pi_1),0.625,80
-Tape,Sim (pi_2),0.175,80
-Pen,Real (pi_1),0.2,20
-Pen,Real (pi_2),0.0,20
-Pen,Sim (pi_1),0.15,80
-Pen,Sim (pi_2),0.0,80
+task,domain,policy,success_rate,num_trials,successes
+Cup,real,pi_1,0.4,20,8
+Cup,real,pi_2,0.35,20,7
+Cup,sim,pi_1,0.375,80,30
+Cup,sim,pi_2,0.7375,80,59
+Tape,real,pi_1,0.95,20,19
+Tape,real,pi_2,0.05,20,1
+Tape,sim,pi_1,0.625,80,50
+Tape,sim,pi_2,0.175,80,14
+Pen,real,pi_1,0.2,20,4
+Pen,real,pi_2,0.0,20,0
+Pen,sim,pi_1,0.15,80,12
+Pen,sim,pi_2,0.0,80,0

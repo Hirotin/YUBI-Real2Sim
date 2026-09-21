@@ -17,13 +17,15 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from style import BASELINE, INK_MUTED, INK_SECONDARY, SURFACE
+from style import GRID_COLOR, INK_SECONDARY, apply_icra_style
+
+BASELINE = GRID_COLOR
+INK_MUTED = "#8a8a8a"
 
 
 def make_placeholder(title, csv_path, output_path, figsize=(7, 4.5)):
+    apply_icra_style()
     fig, ax = plt.subplots(figsize=figsize, dpi=200)
-    fig.patch.set_facecolor(SURFACE)
-    ax.set_facecolor(SURFACE)
     ax.set_xticks([])
     ax.set_yticks([])
     for spine in ax.spines.values():

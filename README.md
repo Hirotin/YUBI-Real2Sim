@@ -62,6 +62,14 @@
 
 ---
 
+Colors and fonts follow the ICRA 2026 paper's own figure scripts
+(`icra2026_yubi-real2sim/figs/plots/*.py`): DejaVu Serif, real = gray /
+sim = blue with policy encoded as opacity (Fig. 1 style) for the overall
+chart, and policy-colored blue/amber bars for the sim-only disturbance
+chart (matching the paper's counterfactual significance plots). Each
+`plot_*.py` script also writes a vector `.pdf` next to its `.png`, ready to
+drop into the paper.
+
 Each figure above is generated from CSVs. `success_rate_overall/` and
 `success_rate_disturbances/` produce one figure per CSV file found in their
 directory (one per scene, and one per scene/task pair, respectively) — drop

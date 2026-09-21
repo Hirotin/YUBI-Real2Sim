@@ -13,15 +13,19 @@ Raw input schema (one row per scene x task x domain x policy x condition):
 
 Output:
     results/data/success_rate_overall/<scene>.csv
-        rows where condition == "Clean", one file per scene
-        schema: task,condition,success_rate,num_trials
-        (here "condition" is the series label "<Real/Sim> (<policy>)")
+        rows where condition == "Clean", one file per scene, both domains
+        schema: task,domain,policy,success_rate,num_trials,successes
 
     results/data/success_rate_disturbances/<scene>_<task>.csv
-        rows where condition != "Clean", one file per (scene, task)
-        schema: disturbance,condition,success_rate,num_trials
-        (here "condition" is the series label "<Real/Sim> (<policy>)",
-        "disturbance" is the raw condition name)
+        rows where condition != "Clean" AND domain == "sim", one file per
+        (scene, task). Real trials were only run under the Clean condition
+        (the raw log repeats the Clean real result under every disturbance
+        row as a reference, not as a re-measurement), so real is reported
+        once in success_rate_overall/ and omitted here to avoid implying it
+        was re-measured per disturbance -- this matches how the paper's own
+        plot_all_policy_success_significance.py reports this data (sim only,
+        y-axis labelled "Sim success rate").
+        schema: disturbance,domain,policy,success_rate,num_trials,successes
 
 Re-running this script overwrites the generated CSVs; it does not touch
 results/figures/ -- run the plot_*.py scripts (or generate_all.sh)
@@ -40,13 +44,19 @@ OVERALL_DIR = REPO_ROOT / "results" / "data" / "success_rate_overall"
 DISTURBANCES_DIR = REPO_ROOT / "results" / "data" / "success_rate_disturbances"
 
 
-def series_label(domain, policy):
-    return f"{'Real' if domain == 'real' else 'Sim'} ({policy})"
-
-
 def load_rows(csv_path):
     with open(csv_path, newline="") as f:
         return list(csv.DictReader(f))
+
+
+def to_row(r):
+    return {
+        "domain": r["domain"],
+        "policy": r["policy"],
+        "success_rate": int(r["successes"]) / int(r["trials"]),
+        "num_trials": r["trials"],
+        "successes": r["successes"],
+    }
 
 
 def write_csv(path, fieldnames, rows):
@@ -64,21 +74,16 @@ def main():
     args = parser.parse_args()
 
     raw_rows = load_rows(args.input)
-
     scenes = list(dict.fromkeys(r["scene"] for r in raw_rows))
 
     for scene in scenes:
         scene_rows = [r for r in raw_rows if r["scene"] == scene and r["condition"] == "Clean"]
-        out_rows = [
-            {
-                "task": r["task"],
-                "condition": series_label(r["domain"], r["policy"]),
-                "success_rate": int(r["successes"]) / int(r["trials"]),
-                "num_trials": r["trials"],
-            }
-            for r in scene_rows
-        ]
-        write_csv(OVERALL_DIR / f"{scene}.csv", ["task", "condition", "success_rate", "num_trials"], out_rows)
+        out_rows = [{"task": r["task"], **to_row(r)} for r in scene_rows]
+        write_csv(
+            OVERALL_DIR / f"{scene}.csv",
+            ["task", "domain", "policy", "success_rate", "num_trials", "successes"],
+            out_rows,
+        )
 
     scene_tasks = list(dict.fromkeys((r["scene"], r["task"]) for r in raw_rows))
 
@@ -86,20 +91,15 @@ def main():
         rows = [
             r
             for r in raw_rows
-            if r["scene"] == scene and r["task"] == task and r["condition"] != "Clean"
+            if r["scene"] == scene
+            and r["task"] == task
+            and r["condition"] != "Clean"
+            and r["domain"] == "sim"
         ]
-        out_rows = [
-            {
-                "disturbance": r["condition"],
-                "condition": series_label(r["domain"], r["policy"]),
-                "success_rate": int(r["successes"]) / int(r["trials"]),
-                "num_trials": r["trials"],
-            }
-            for r in rows
-        ]
+        out_rows = [{"disturbance": r["condition"], **to_row(r)} for r in rows]
         write_csv(
             DISTURBANCES_DIR / f"{scene}_{task}.csv",
-            ["disturbance", "condition", "success_rate", "num_trials"],
+            ["disturbance", "domain", "policy", "success_rate", "num_trials", "successes"],
             out_rows,
         )
 

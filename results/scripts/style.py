@@ -1,104 +1,90 @@
 """Shared plotting style for the results figures.
 
-Palette and chart chrome follow a validated categorical order (fixed hue
-sequence, never re-cycled) so that colors stay consistent and
-colorblind-distinguishable across every figure in this directory.
+Matches the house style used by the ICRA 2026 paper's own figure scripts
+(icra2026_yubi-real2sim/figs/plots/*.py): DejaVu Serif, thin hairline
+spines/gridlines, and the same color roles --
+
+    Real vs. Sim panels (Fig. 1, plot_policy_success.py):
+        real = REAL_COLOR (#4a4a4a), sim = SIM_COLOR (#1d4ed8);
+        the first policy encountered is drawn at POLICY_ALPHAS[0] (0.42),
+        the second at POLICY_ALPHAS[1] (1.0).
+
+    Within-sim policy comparisons under disturbance
+    (plot_all_policy_success_significance.py / plot_cup_success_significance.py):
+        the first policy is POLICY_COLORS[0] (#2563eb, the shared/generalist
+        checkpoint), the second is POLICY_COLORS[1] (#f59e0b, the
+        task-specific checkpoint).
+
+    Per-scene panels (Fig. 3, plot_viewcount_quality_nvs.py):
+        SCENE_COLORS keyed by scene name (Duo/Flat/G2).
 """
+
+import math
 
 import matplotlib.pyplot as plt
 
-# Fixed categorical hue order (light-surface variant). Assign colors to
-# series in first-seen order -- never re-sort or cycle per chart.
-CATEGORICAL = [
-    "#2a78d6",  # 1 blue
-    "#eb6834",  # 2 orange
-    "#1baf7a",  # 3 aqua
-    "#eda100",  # 4 yellow
-    "#e87ba4",  # 5 magenta
-    "#008300",  # 6 green
-    "#4a3aa7",  # 7 violet
-    "#e34948",  # 8 red
-]
+REAL_COLOR = "#4a4a4a"
+SIM_COLOR = "#1d4ed8"
+POLICY_ALPHAS = (0.42, 1.0)
+POLICY_COLORS = ("#2563eb", "#f59e0b")
+SCENE_COLORS = {"Duo": "#3366b3", "Flat": "#db7326", "G2": "#40945a"}
+RIG_NAMES = {"Duo": "FR3 Duo", "Flat": "FR3 Flat", "G2": "G2"}
 
-SEQUENTIAL_BLUE = "#2a78d6"
-
-SURFACE = "#fcfcfb"
-INK_PRIMARY = "#0b0b0b"
-INK_SECONDARY = "#52514e"
-INK_MUTED = "#898781"
-GRIDLINE = "#e1e0d9"
-BASELINE = "#c3c2b7"
-
-FONT_FAMILY = "sans-serif"
+GRID_COLOR = "#DDE2E7"
+SPINE_COLOR = "#666666"
+ERROR_BAR_COLOR = "#333333"
+INK_PRIMARY = "#1a1a1a"
+INK_SECONDARY = "#444444"
 
 
-def assign_colors(labels):
-    """Map each distinct label to a fixed categorical color, in the order
-    the labels were first encountered."""
-    seen = []
-    for label in labels:
-        if label not in seen:
-            seen.append(label)
-    if len(seen) > len(CATEGORICAL):
-        raise ValueError(
-            f"{len(seen)} series requested but only {len(CATEGORICAL)} "
-            "categorical colors are defined; fold extra series into "
-            "'Other' or split into small multiples."
-        )
-    return {label: CATEGORICAL[i] for i, label in enumerate(seen)}
-
-
-def new_figure(figsize=(7, 4.5)):
-    fig, ax = plt.subplots(figsize=figsize, dpi=200)
-    fig.patch.set_facecolor(SURFACE)
-    ax.set_facecolor(SURFACE)
-    return fig, ax
-
-
-def style_axes(ax, ylabel=None, title=None):
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_visible(False)
-    ax.spines["bottom"].set_color(BASELINE)
-    ax.yaxis.grid(True, color=GRIDLINE, linewidth=1, zorder=0)
-    ax.set_axisbelow(True)
-    ax.tick_params(axis="x", colors=INK_SECONDARY, length=0)
-    ax.tick_params(axis="y", colors=INK_MUTED, length=0)
-    if ylabel:
-        ax.set_ylabel(ylabel, color=INK_SECONDARY, fontsize=10)
-    if title:
-        ax.set_title(title, color=INK_PRIMARY, fontsize=12, pad=12, loc="left")
-
-
-def bar_value_labels(ax, bars, fmt="{:.1f}"):
-    for bar in bars:
-        height = bar.get_height()
-        ax.annotate(
-            fmt.format(height),
-            xy=(bar.get_x() + bar.get_width() / 2, height),
-            xytext=(0, 3),
-            textcoords="offset points",
-            ha="center",
-            va="bottom",
-            fontsize=8,
-            color=INK_SECONDARY,
-        )
-
-
-def legend(ax, **kwargs):
-    leg = ax.legend(
-        frameon=False,
-        loc=kwargs.pop("loc", "upper center"),
-        bbox_to_anchor=kwargs.pop("bbox_to_anchor", (0.5, 1.18)),
-        ncol=kwargs.pop("ncol", 4),
-        fontsize=9,
-        labelcolor=INK_SECONDARY,
-        **kwargs,
+def apply_icra_style(base_size=8):
+    """Match the rcParams every figure script in the paper repo sets."""
+    plt.rcParams.update(
+        {
+            "font.family": "DejaVu Serif",
+            "font.size": base_size,
+            "mathtext.fontset": "dejavuserif",
+            "axes.labelsize": base_size + 0.5,
+            "xtick.labelsize": base_size,
+            "ytick.labelsize": base_size - 0.5,
+            "axes.linewidth": 0.65,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
     )
-    return leg
 
 
-def savefig(fig, output_path):
-    fig.tight_layout()
-    fig.savefig(output_path, facecolor=fig.get_facecolor(), bbox_inches="tight")
+def wilson_interval(successes, trials, z=1.959963984540054):
+    """Two-sided 95% Wilson binomial interval, as used throughout the paper's
+    own significance plots."""
+    if trials <= 0:
+        return 0.0, 0.0
+    p = successes / trials
+    den = 1 + z * z / trials
+    center = (p + z * z / (2 * trials)) / den
+    half = z * math.sqrt(p * (1 - p) / trials + z * z / (4 * trials * trials)) / den
+    return max(0.0, center - half), min(1.0, center + half)
+
+
+def style_axes(ax, ylabel=None, grid_axis="y"):
+    ax.grid(axis=grid_axis, color=GRID_COLOR, linewidth=0.5, zorder=0)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["bottom"].set_color(SPINE_COLOR)
+    ax.spines["left"].set_color(SPINE_COLOR)
+    ax.tick_params(axis="x", length=0, pad=4)
+    ax.tick_params(axis="y", length=3, color=SPINE_COLOR)
+    if ylabel:
+        ax.set_ylabel(ylabel)
+
+
+def savefig(fig, output_png_path):
+    """Write both the PNG (for the README) and a vector PDF (for the paper),
+    mirroring how every figure script in the paper repo saves its output."""
+    output_png_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(
+        output_png_path.with_suffix(".pdf"),
+        metadata={"Title": output_png_path.stem, "Author": "", "CreationDate": None, "ModDate": None},
+    )
+    fig.savefig(output_png_path, dpi=300)
     plt.close(fig)

@@ -1,37 +1,19 @@
-disturbance,condition,success_rate,num_trials
-hole_54,Real (pi_1),1.0,20
-hole_54,Real (pi_2),0.8,20
-hole_54,Sim (pi_1),0.0125,80
-hole_54,Sim (pi_2),0.1125,80
-hole_90,Real (pi_1),1.0,20
-hole_90,Real (pi_2),0.8,20
-hole_90,Sim (pi_1),0.025,80
-hole_90,Sim (pi_2),0.075,80
-float_low8,Real (pi_1),1.0,20
-float_low8,Real (pi_2),0.8,20
-float_low8,Sim (pi_1),0.025,80
-float_low8,Sim (pi_2),0.025,80
-float_mid8,Real (pi_1),1.0,20
-float_mid8,Real (pi_2),0.8,20
-float_mid8,Sim (pi_1),0.0375,80
-float_mid8,Sim (pi_2),0.15,80
-float_high8,Real (pi_1),1.0,20
-float_high8,Real (pi_2),0.8,20
-float_high8,Sim (pi_1),0.1125,80
-float_high8,Sim (pi_2),0.125,80
-tablegeo_s1,Real (pi_1),1.0,20
-tablegeo_s1,Real (pi_2),0.8,20
-tablegeo_s1,Sim (pi_1),0.175,80
-tablegeo_s1,Sim (pi_2),0.0625,80
-fov_center,Real (pi_1),1.0,20
-fov_center,Real (pi_2),0.8,20
-fov_center,Sim (pi_1),0.0125,80
-fov_center,Sim (pi_2),0.0,80
-pinhole_adjacent_remove_30,Real (pi_1),1.0,20
-pinhole_adjacent_remove_30,Real (pi_2),0.8,20
-pinhole_adjacent_remove_30,Sim (pi_1),0.0125,80
-pinhole_adjacent_remove_30,Sim (pi_2),0.0,80
-pinhole_random_remove_30,Real (pi_1),1.0,20
-pinhole_random_remove_30,Real (pi_2),0.8,20
-pinhole_random_remove_30,Sim (pi_1),0.025,80
-pinhole_random_remove_30,Sim (pi_2),0.05,80
+disturbance,domain,policy,success_rate,num_trials,successes
+hole_54,sim,pi_1,0.0125,80,1
+hole_54,sim,pi_2,0.1125,80,9
+hole_90,sim,pi_1,0.025,80,2
+hole_90,sim,pi_2,0.075,80,6
+float_low8,sim,pi_1,0.025,80,2
+float_low8,sim,pi_2,0.025,80,2
+float_mid8,sim,pi_1,0.0375,80,3
+float_mid8,sim,pi_2,0.15,80,12
+float_high8,sim,pi_1,0.1125,80,9
+float_high8,sim,pi_2,0.125,80,10
+tablegeo_s1,sim,pi_1,0.175,80,14
+tablegeo_s1,sim,pi_2,0.0625,80,5
+fov_center,sim,pi_1,0.0125,80,1
+fov_center,sim,pi_2,0.0,80,0
+pinhole_adjacent_remove_30,sim,pi_1,0.0125,80,1
+pinhole_adjacent_remove_30,sim,pi_2,0.0,80,0
+pinhole_random_remove_30,sim,pi_1,0.025,80,2
+pinhole_random_remove_30,sim,pi_2,0.05,80,4

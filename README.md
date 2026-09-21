@@ -6,7 +6,7 @@
 
 ## 2. Task Success Rate under Disturbances
 
-Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance.
+Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance. The full per-scene results are in Section 6.
 
 ### 2.1 Policy ranking reversed
 
@@ -19,30 +19,6 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 ### 2.3 From not significant to significant
 
 ![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
-
-### 2.4 All results: Duo
-
-![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
-
-![Task success rate under disturbances — Duo / Pen](results/figures/success_rate_disturbances/Duo_Pen.png)
-
-![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
-
-### 2.5 All results: Flat
-
-![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
-
-![Task success rate under disturbances — Flat / Pen](results/figures/success_rate_disturbances/Flat_Pen.png)
-
-![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
-
-### 2.6 All results: G2
-
-![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
-
-![Task success rate under disturbances — G2 / Pen](results/figures/success_rate_disturbances/G2_Pen.png)
-
-![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
 ## 3. Sim-to-Real MAE
 
@@ -86,6 +62,34 @@ PSNR in dB (↑), SSIM (↑), LPIPS (↓).
 <!-- nvs-table:end -->
 
 Values: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
+
+## 6. Task Success Rate under Disturbances: All Results
+
+Sim success rate of pi_1 and pi_2 under every disturbance, per scene and task (the pairs highlighted in Section 2 are drawn from these).
+
+### 6.1 FR3 Duo
+
+![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
+
+![Task success rate under disturbances — Duo / Pen](results/figures/success_rate_disturbances/Duo_Pen.png)
+
+![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
+
+### 6.2 FR3 Flat
+
+![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
+
+![Task success rate under disturbances — Flat / Pen](results/figures/success_rate_disturbances/Flat_Pen.png)
+
+![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
+
+### 6.3 G2
+
+![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
+
+![Task success rate under disturbances — G2 / Pen](results/figures/success_rate_disturbances/G2_Pen.png)
+
+![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
 ---
 

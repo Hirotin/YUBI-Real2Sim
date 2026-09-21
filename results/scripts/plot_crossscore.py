@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Plot reconstruction quality metrics (MAE, CrossScore) per scene.
+"""Plot CrossScore per scene.
 
-CSV schema (results/data/reconstruction_metrics.csv):
-    scene,MAE,CrossScore
+CSV schema (results/data/crossscore.csv):
+    scene,CrossScore
 
-MAE and CrossScore live on different scales, so each metric gets its own
-panel (small multiples) rather than a shared/dual axis. Bars are colored per
+Bars are colored per
 scene with the same palette as the paper's Fig. 3 (Duo/Flat/G2), so a scene
 carries the same color across every figure in this repo.
 
@@ -24,10 +23,10 @@ import matplotlib.pyplot as plt
 
 from style import REAL_COLOR, SCENE_COLORS, apply_icra_style, savefig, style_axes
 
-DEFAULT_CSV = Path(__file__).resolve().parents[1] / "data" / "reconstruction_metrics.csv"
-DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "reconstruction_metrics.png"
+DEFAULT_CSV = Path(__file__).resolve().parents[1] / "data" / "crossscore.csv"
+DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "figures" / "crossscore.png"
 
-METRICS = ["MAE", "CrossScore"]
+METRICS = ["CrossScore"]
 
 
 def load_rows(csv_path):
@@ -40,8 +39,9 @@ def plot(rows, output_path):
     colors = [SCENE_COLORS.get(s, REAL_COLOR) for s in scenes]
 
     apply_icra_style()
-    fig, axes = plt.subplots(1, len(METRICS), figsize=(max(5.2, 1.9 * len(scenes) * len(METRICS)), 3.0))
-    fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.86, wspace=0.28)
+    fig, axes = plt.subplots(1, len(METRICS), figsize=(3.5, 2.62), squeeze=False)
+    axes = axes[0]
+    fig.subplots_adjust(left=0.17, right=0.98, bottom=0.12, top=0.93)
 
     for ax, metric in zip(axes, METRICS):
         heights = [float(r[metric]) for r in rows]
@@ -52,9 +52,7 @@ def plot(rows, output_path):
                 textcoords="offset points", ha="center", va="bottom", fontsize=7,
             )
         style_axes(ax, ylabel=metric)
-        ax.set_title(metric, loc="left", fontsize=9, pad=4)
 
-    fig.suptitle("Reconstruction Quality", x=0.01, ha="left", fontsize=9.5, y=0.995)
     savefig(fig, output_path)
     print(f"Wrote figure: {output_path}")
 

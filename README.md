@@ -44,11 +44,19 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 ![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
-## 3. Reconstruction Quality (MAE / CrossScore)
+## 3. Sim-to-Real MAE
 
-![Reconstruction quality: MAE and CrossScore](results/figures/reconstruction_metrics.png)
+Mean absolute error between simulated and real success rates, in percentage points, averaged with equal weight over the 6 task x policy cells of each scene: MAE(scene, condition) = (1/6) Σ |100·sim_success/80 − 100·real_success/20|. Real is the Clean real measurement for every condition.
 
-## 4. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
+![Sim-to-real MAE per scene and condition](results/figures/mae.png)
+
+Values: [`results/data/mae.csv`](results/data/mae.csv)
+
+## 4. CrossScore
+
+![CrossScore](results/figures/crossscore.png)
+
+## 5. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
 ![Novel view synthesis quality: PSNR, SSIM, LPIPS](results/figures/novel_view_metrics.png)
 

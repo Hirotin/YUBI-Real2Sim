@@ -24,6 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 from style import REAL_COLOR, RIG_NAMES, apply_icra_style, savefig, style_axes
 
@@ -95,9 +96,9 @@ def short_label(condition):
 
 
 def plot(summary, output_path):
-    """Conditions run across the page, MAE runs up it. Each condition is one
-    vertical line spanning its scenes, colored by disturbance type; each scene
-    has its own marker and a faint trace so it can be followed across."""
+    """Conditions run across the page, MAE runs up it. Markers are colored by
+    disturbance type and shaped by scene; a faint trace follows each scene across
+    the conditions."""
     conditions = list(dict.fromkeys(r["condition"] for r in summary))
     scenes = list(dict.fromkeys(r["scene"] for r in summary))
     lookup = {(r["condition"], r["scene"]): r["mae_pp"] for r in summary}
@@ -119,9 +120,6 @@ def plot(summary, output_path):
         ax.plot(*zip(*points), color="#9aa0a6", linewidth=0.6, alpha=0.7, zorder=1)
     for condition in conditions:
         colour = FAMILY_COLORS.get(family(condition), REAL_COLOR)
-        values = [lookup[(condition, s)] for s in scenes if (condition, s) in lookup]
-        ax.plot([slots[condition]] * 2, [min(values), max(values)], color=colour, linewidth=1.4,
-                alpha=0.55, zorder=2, solid_capstyle="butt")
         for i, scene in enumerate(scenes):
             if (condition, scene) in lookup:
                 ax.plot([slots[condition]], [lookup[(condition, scene)]], MARKERS[i % len(MARKERS)],
@@ -137,8 +135,7 @@ def plot(summary, output_path):
                             linestyle="None", markersize=5.2, label=RIG_NAMES.get(s, s))
                      for i, s in enumerate(scenes)]
     present = list(dict.fromkeys(family(c) for c in conditions))
-    family_handles = [Line2D([], [], color=FAMILY_COLORS.get(f, REAL_COLOR), linewidth=2.2, label=f)
-                      for f in present]
+    family_handles = [Patch(facecolor=FAMILY_COLORS.get(f, REAL_COLOR), label=f) for f in present]
     fig.legend(handles=scene_handles, loc="upper center", bbox_to_anchor=(0.55, 1.0),
                ncol=len(scene_handles), frameon=False, fontsize=8, handletextpad=0.3,
                columnspacing=1.4)

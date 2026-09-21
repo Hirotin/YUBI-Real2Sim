@@ -48,7 +48,7 @@ Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each di
 
 Mean absolute error between simulated and real success rates, in percentage points, averaged with equal weight over the 6 task x policy cells of each scene: MAE(scene, condition) = (1/6) Σ |100·sim_success/80 − 100·real_success/20|. Real is the Clean real measurement for every condition.
 
-![Sim-to-real MAE per scene and condition](results/figures/mae.png?v=fe789484)
+![Sim-to-real MAE per scene and condition](results/figures/mae.png?v=96ad6854)
 
 Values: [`results/data/mae.csv`](results/data/mae.csv)
 

@@ -126,9 +126,11 @@ The label is the same as in the main paper: $H=0$ when the observed ranking of t
 | PSNR / Test | 8/15 | 8/15 | 15/15 | 31/45 (68.9%) | 9/15 |
 | SSIM / Test | 8/15 | 9/15 | 15/15 | 32/45 (71.1%) | 7/15 |
 | LPIPS / Test | 8/15 | 5/15 | 15/15 | 28/45 (62.2%) | 10/15 |
+| CrossScore / Test † | 7/15 | 8/15 | 15/15 | 30/45 (66.7%) | 4/15 |
+| CrossScore / OBS † | 6/15 | 3/15 | 15/15 | 24/45 (53.3%) | 8/15 |
 <!-- table-s1:end -->
 
-**Table S1. Extended comparison corresponding to Table II of the main paper.** Entries are correct/total classification decisions on the same matched conditions. The quality-based rows reproduce Table II without modification. Both constant predictors are reported without fitting to quality scores or target-scene labels. "Total" pools the 45 task-level decisions; "All-three" evaluates the separate binary target of whether all three task rankings agree with real evaluation, so for that column *Always unreliable* means "at least one task ranking disagrees", not "all three disagree". As in the main paper, All-three predictions come from a threshold fitted to the All-three labels, not from combining the three task-level predictions.
+**Table S1. Extended comparison corresponding to Table II of the main paper.** Entries are correct/total classification decisions on the same matched conditions. The five quality-based rows of Table II are reproduced without modification. Rows marked † are not in Table II: they apply the identical protocol (scene-held-out threshold maximizing balanced accuracy, single-class fallback, threshold refit per target) to the CrossScore values of Section 3, with CrossScore / Test on the held-out test views and CrossScore / OBS on the OBS views; the classifier used here reproduces all 300 logged Table II predictions exactly. Both constant predictors are reported without fitting to quality scores or target-scene labels. "Total" pools the 45 task-level decisions; "All-three" evaluates the separate binary target of whether all three task rankings agree with real evaluation, so for that column *Always unreliable* means "at least one task ranking disagrees", not "all three disagree". As in the main paper, All-three predictions come from a threshold fitted to the All-three labels, not from combining the three task-level predictions.
 
 The SSIM result of 32/45 in Sec. V-E is the highest pooled task-level accuracy among the quality-based methods listed in Table II. The expanded comparison shows that the always-reliable predictor achieves 35/45. Thus, the reported SSIM accuracy does not demonstrate an improvement over this constant predictor on the evaluated conditions. In the pooled counts the gap sits entirely in Tape:
 
@@ -160,6 +162,8 @@ Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged
 | PSNR / Test | 0 | 3 | 4 | 8 | 33.3% |
 | SSIM / Test | 0 | 3 | 3 | 9 | 37.5% |
 | LPIPS / Test | 0 | 3 | 7 | 5 | 20.8% |
+| CrossScore / Test † | 0 | 3 | 4 | 8 | 33.3% |
+| CrossScore / OBS † | 0 | 3 | 9 | 3 | 12.5% |
 <!-- table-s2:end -->
 
 **Table S2. Tape classification errors pooled across the three held-out-scene folds.** The evaluated set contains three disagreements and twelve agreements. Balanced accuracy is computed from the pooled out-of-fold confusion counts, not averaged over single-class test folds:
@@ -168,6 +172,6 @@ Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged
 \mathrm{BA} = \frac{1}{2}\left(\frac{TP}{TP+FN} + \frac{TN}{TN+FP}\right), \qquad \mathrm{BA}_{\mathrm{Tape,\,SSIM}} = \frac{1}{2}\left(\frac{0}{3} + \frac{9}{12}\right) = 37.5\%
 ```
 
-All quality-based methods miss the three Tape disagreements in the G2 fold. Their Tape accuracy differences therefore arise from false alarms on agreement-labeled conditions, rather than differences in disagreement detection. For SSIM, the 9/15 result consists of nine true negatives, three false positives, and three false negatives. Pen contains no disagreement, so disagreement recall and two-class balanced accuracy are undefined (N/A) there; its 15/15 is not evidence of disagreement detection.
+All quality-based methods, including both CrossScore views, miss the three Tape disagreements in the G2 fold. Their Tape accuracy differences therefore arise from false alarms on agreement-labeled conditions, rather than differences in disagreement detection. For SSIM, the 9/15 result consists of nine true negatives, three false positives, and three false negatives. Pen contains no disagreement, so disagreement recall and two-class balanced accuracy are undefined (N/A) there; its 15/15 is not evidence of disagreement detection.
 
 ---

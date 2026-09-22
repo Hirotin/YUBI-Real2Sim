@@ -27,6 +27,7 @@ from style import INK_SECONDARY, RIG_NAMES, SPINE_COLOR, apply_icra_style, savef
 
 RESULTS = Path(__file__).resolve().parents[1]
 DEFAULT_CSV = RESULTS / "data" / "reliability_predictions.csv"
+EXTRA_CSV = RESULTS / "data" / "reliability_predictions_crossscore.csv"
 DEFAULT_OUTPUT = RESULTS / "figures" / "reliability_labels.png"
 README = RESULTS.parent / "README.md"
 
@@ -36,6 +37,8 @@ VARIANTS = [("Hole54", "Hole 54°"), ("Hole90", "Hole 90°"), ("CentralPinhole",
             ("Contiguous30", "Adjacent\n30%"), ("Random30", "Random\n30%")]
 METHODS = [("NVS-SQA Test", "NVS-SQA / Test"), ("NVS-SQA OBS", "NVS-SQA / OBS"),
            ("PSNR Test", "PSNR / Test"), ("SSIM Test", "SSIM / Test"), ("LPIPS Test", "LPIPS / Test")]
+# computed here with the same protocol, not part of Table II
+EXTRA_METHODS = [("CrossScore Test", "CrossScore / Test \u2020"), ("CrossScore OBS", "CrossScore / OBS \u2020")]
 DISAGREE = "#b91c1c"
 
 
@@ -64,7 +67,9 @@ def table_s1(rows):
     out = ["| Method / view | Cup | Tape | Pen | Total | All-three |", "|---|---:|---:|---:|---:|---:|"]
     out.append(line("Always reliable ($\\widehat{H}=0$)", {t: per_target[t].count(0) for t in targets}))
     out.append(line("Always unreliable ($\\widehat{H}=1$)", {t: per_target[t].count(1) for t in targets}))
-    for key, name in METHODS:
+    for key, name in METHODS + EXTRA_METHODS:
+        if not any(r["method"] == key for r in rows):
+            continue
         correct = {t: sum(int(r["correct"]) for r in rows if r["method"] == key and r["target"] == t)
                    for t in targets}
         out.append(line(name, correct))
@@ -83,9 +88,11 @@ def table_s2(rows):
            "|---|---:|---:|---:|---:|---:|"]
     out.append(line("Always reliable", 0, pos, 0, neg))
     out.append(line("Always unreliable", pos, 0, neg, 0))
-    for key, name in METHODS:
+    for key, name in METHODS + EXTRA_METHODS:
         sel = [(int(r["label"]), int(r["prediction"])) for r in rows
                if r["method"] == key and r["target"] == "Tape"]
+        if not sel:
+            continue
         out.append(line(name, sel.count((1, 1)), sel.count((1, 0)), sel.count((0, 1)), sel.count((0, 0))))
     return "\n".join(out)
 
@@ -162,7 +169,8 @@ def plot(rows, output_path):
         truth = [labels[("Tape", single, v)] for v, _ in VARIANTS]
         preds = {tuple(int(r["prediction"]) for v, _ in VARIANTS for r in rows
                        if r["method"] == key and r["target"] == "Tape"
-                       and r["heldout_scene"] == single and r["variant"] == v) for key, _ in METHODS}
+                       and r["heldout_scene"] == single and r["variant"] == v)
+                 for key, _ in METHODS + EXTRA_METHODS if any(r["method"] == key for r in rows)}
         pred = list(next(iter(preds))) if len(preds) == 1 else None
         bx.text(0.1, 3.6, f"{RIG_NAMES.get(single, single)} labels", fontsize=7.6, va="center")
         bx.text(5.6, 3.6, str(truth), fontsize=8, va="center", family="DejaVu Sans Mono")
@@ -191,6 +199,8 @@ def main():
         print(f"No prediction log at {args.csv}; nothing to do.")
         return
     rows = load_rows(args.csv)
+    if EXTRA_CSV.exists():
+        rows += load_rows(EXTRA_CSV)
     plot(rows, args.output)
     text = fill(fill(README.read_text(), "table-s1", table_s1(rows)), "table-s2", table_s2(rows))
     README.write_text(text)

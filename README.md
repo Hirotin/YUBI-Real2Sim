@@ -32,7 +32,9 @@ Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 ## 3. CrossScore
 
-CrossScore per scene and condition, on the held-out Test views (mean over test views; the same views as Section 4) and on the OBS views (mean of the right and left OBS cameras). Higher is better.
+CrossScore per scene and condition, on held-out Test views and on OBS views (mean of the right and left OBS cameras). Higher is better.
+
+The Test-view CrossScore is computed on a subset of the Section 4 test images: only images whose person mask (DeepLabv3, 7 px dilation) contains no person pixels, i.e. Duo 105/216, Flat 62/171, G2 72/252 (the same subset under every condition; 9 G2 images without a mask are excluded because the absence of a person cannot be confirmed). Section 4 uses all test images. For a same-image comparison, the table below restates PSNR / SSIM / LPIPS on this common subset next to CrossScore; views with a person are on average harder, so the subset values are higher than the full-set values of Section 4.
 
 ![CrossScore on Test and OBS views](results/figures/crossscore_lines.png)
 
@@ -51,7 +53,22 @@ CrossScore per scene and condition, on the held-out Test views (mean over test v
 | pinhole_random_remove_30 | 0.643 | 0.615 | 0.765 | 0.551 | 0.677 | 0.784 |
 <!-- crossscore-table:end -->
 
-Values: [`results/data/crossscore.csv`](results/data/crossscore.csv)
+**Full-reference metrics and CrossScore on the common person-free test subset** (Duo 105, Flat 62, G2 72 images). PSNR in dB (↑), SSIM (↑), LPIPS (↓), CrossScore (↑).
+
+| Condition | PSNR FR3 Duo | PSNR FR3 Flat | PSNR G2 | SSIM FR3 Duo | SSIM FR3 Flat | SSIM G2 | LPIPS FR3 Duo | LPIPS FR3 Flat | LPIPS G2 | CrossScore FR3 Duo | CrossScore FR3 Flat | CrossScore G2 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Clean | 19.88 | 19.33 | 17.63 | 0.754 | 0.740 | 0.740 | 0.206 | 0.199 | 0.239 | 0.897 | 0.862 | 0.874 |
+| hole_54 | 14.34 | 15.93 | 15.82 | 0.588 | 0.639 | 0.692 | 0.380 | 0.296 | 0.291 | 0.722 | 0.740 | 0.822 |
+| hole_90 | 10.03 | 10.49 | 11.00 | 0.387 | 0.443 | 0.522 | 0.608 | 0.512 | 0.508 | 0.508 | 0.523 | 0.592 |
+| float_low8 | 19.63 | 19.30 | 17.53 | 0.747 | 0.736 | 0.736 | 0.218 | 0.208 | 0.248 | 0.889 | 0.854 | 0.872 |
+| float_mid8 | 19.78 | 19.38 | 17.52 | 0.750 | 0.737 | 0.736 | 0.216 | 0.208 | 0.250 | 0.890 | 0.851 | 0.868 |
+| float_high8 | 19.84 | 19.40 | 17.52 | 0.750 | 0.735 | 0.735 | 0.216 | 0.208 | 0.247 | 0.887 | 0.849 | 0.867 |
+| tablegeo_s1 | 19.38 | 18.74 | 17.50 | 0.736 | 0.719 | 0.730 | 0.215 | 0.209 | 0.247 | 0.888 | 0.853 | 0.872 |
+| fov_center | 15.81 | 16.73 | 16.06 | 0.586 | 0.590 | 0.672 | 0.328 | 0.305 | 0.293 | 0.689 | 0.672 | 0.797 |
+| pinhole_adjacent_remove_30 | 15.04 | 16.04 | 14.97 | 0.511 | 0.521 | 0.591 | 0.388 | 0.356 | 0.353 | 0.601 | 0.569 | 0.703 |
+| pinhole_random_remove_30 | 15.93 | 16.31 | 15.80 | 0.579 | 0.570 | 0.654 | 0.341 | 0.327 | 0.307 | 0.643 | 0.615 | 0.765 |
+
+Values: [`results/data/crossscore.csv`](results/data/crossscore.csv) (CrossScore, both views), [`results/data/test_metrics_common_set.csv`](results/data/test_metrics_common_set.csv) (full-set and common-subset PSNR / SSIM / LPIPS side by side).
 
 ## 4. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 

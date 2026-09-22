@@ -1,0 +1,4 @@
+rig,condition,metric,score,views,projection,resolution,clean_ply_sha256,source_file
+Duo,Clean,NVS-SQA,-2.768749237060547,216,pinhole 90deg,518x518,274d806f0ba76e748b01f37a949cb420e330a4400d9d13fcf3d8e2486bce7491,/groups/qgah50055/qch10159hn/cf_eval_final/outputs/test_view_quality_clear_20260916/Duo/Clear_nvs.json
+Flat,Clean,NVS-SQA,-2.923248291015625,171,pinhole 90deg,518x518,005f96923a56e7d99736e58ddb40cb6e081ff6d453b343bc223e8de6067b7c5a,/groups/qgah50055/qch10159hn/cf_eval_final/outputs/test_view_quality_clear_20260916/Flat/Clear_nvs.json
+G2,Clean,NVS-SQA,-2.9923763275146484,252,pinhole 90deg,518x518,eb262c21e7faa288ca27828e34bce3db7acf5ea5129c1e9e9f066fee2b992c7f,/groups/qgah50055/qch10159hn/cf_eval_final/outputs/test_view_quality_clear_20260916/G2/Clear_nvs.json

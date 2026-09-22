@@ -108,7 +108,10 @@ Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean 
 
 ## 6. Supplementary Analysis of Table II: Constant Baselines and Fold-wise Class Support
 
-This section supplements Table II and Sec. V-E of the main paper with constant-prediction baselines, the distribution of ranking-disagreement labels across scenes, and a class-wise analysis of Tape predictions. The evaluated conditions and the quality-based predictions are unchanged: every number below is recomputed from the out-of-fold prediction log behind Table II ([`results/data/reliability_predictions.csv`](results/data/reliability_predictions.csv)), without refitting.
+This section supplements Table II and Sec. V-E of the main paper with constant-prediction baselines, the distribution of ranking-disagreement labels across scenes, a class-wise analysis of Tape predictions, and CrossScore run through the same procedure. Two kinds of numbers appear below:
+
+- For the five quality-based methods of Table II and for the constant predictors, nothing is refit. These numbers are recomputed from the out-of-fold prediction log behind Table II ([`results/data/reliability_predictions.csv`](results/data/reliability_predictions.csv)): the same conditions, the same fitted thresholds, the same predictions.
+- The CrossScore rows (marked †) are new. Their thresholds are fitted here with the same protocol as Table II (scene-held-out, balanced-accuracy threshold, single-class fallback; [`results/scripts/classify_crossscore.py`](results/scripts/classify_crossscore.py)) on the same 15 conditions and labels. The re-implemented classifier reproduces all 300 logged Table II predictions when run on Table II's own inputs.
 
 The label is the same as in the main paper: $H=0$ when the observed ranking of the two policies in simulation agrees with the real ranking, and $H=1$ when it disagrees or the two policies tie in simulation. $H$ describes the ranking of the two policies, not the success or failure of individual robot trials.
 

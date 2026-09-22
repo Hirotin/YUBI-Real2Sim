@@ -36,7 +36,26 @@ Values: [`results/data/mae.csv`](results/data/mae.csv)
 
 ## 4. CrossScore
 
-![CrossScore](results/figures/crossscore.png)
+CrossScore per scene and condition, on the held-out Test views (mean over test views; the same views as Section 5) and on the OBS views (mean of the right and left OBS cameras). Higher is better.
+
+![CrossScore on Test and OBS views](results/figures/crossscore_lines.png)
+
+<!-- crossscore-table:start -->
+| Condition | Test FR3 Duo | Test FR3 Flat | Test G2 | OBS FR3 Duo | OBS FR3 Flat | OBS G2 |
+|---|---:|---:|---:|---:|---:|---:|
+| Clean | 0.897 | 0.862 | 0.874 | 0.778 | 0.824 | 0.828 |
+| hole_54 | 0.722 | 0.740 | 0.822 | 0.781 | 0.829 | 0.802 |
+| hole_90 | 0.508 | 0.523 | 0.592 | 0.631 | 0.745 | 0.827 |
+| float_low8 | 0.889 | 0.854 | 0.872 | 0.766 | 0.800 | 0.818 |
+| float_mid8 | 0.890 | 0.851 | 0.868 | 0.777 | 0.829 | 0.736 |
+| float_high8 | 0.887 | 0.849 | 0.867 | 0.783 | 0.790 | 0.788 |
+| tablegeo_s1 | 0.888 | 0.853 | 0.872 | 0.778 | 0.815 | 0.839 |
+| fov_center | 0.689 | 0.672 | 0.797 | 0.584 | 0.697 | 0.810 |
+| pinhole_adjacent_remove_30 | 0.601 | 0.569 | 0.703 | 0.536 | 0.617 | 0.607 |
+| pinhole_random_remove_30 | 0.643 | 0.615 | 0.765 | 0.551 | 0.677 | 0.784 |
+<!-- crossscore-table:end -->
+
+Values: [`results/data/crossscore.csv`](results/data/crossscore.csv)
 
 ## 5. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 

@@ -69,13 +69,7 @@ def make_placeholder(title, csv_path, output_path, figsize=(7, 4.5)):
     print(f"Wrote placeholder: {output_path}")
 
 
-PLACEHOLDERS = [
-    (
-        "CrossScore",
-        "results/data/crossscore.csv",
-        "results/figures/crossscore.png",
-    ),
-]
+PLACEHOLDERS = []
 
 
 def main():

@@ -1,26 +1,22 @@
 # ICRA 2027 Real2Sim — Supplementary Results
 
-## 1. Task Success Rate: Real Robot vs. Clean Sim
+## 1. Task Success Rate under Disturbances
 
-![Task success rate: real vs. clean sim](results/figures/success_rate_overall.png)
+Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance. The full per-scene results are in Section 5.
 
-## 2. Task Success Rate under Disturbances
-
-Sim pi_1 vs. pi_2, two-sided Fisher exact test (alpha = 0.05), Clean vs. each disturbance. The full per-scene results are in Section 6.
-
-### 2.1 Policy ranking reversed
+### 1.1 Policy ranking reversed
 
 ![Rank reversed](results/figures/success_rate_disturbances_highlights/rank_reversed.png)
 
-### 2.2 From significant to not significant
+### 1.2 From significant to not significant
 
 ![Significance lost](results/figures/success_rate_disturbances_highlights/significance_lost.png)
 
-### 2.3 From not significant to significant
+### 1.3 From not significant to significant
 
 ![Significance gained](results/figures/success_rate_disturbances_highlights/significance_gained.png)
 
-## 3. Sim-to-Real MAE
+## 2. Sim-to-Real MAE
 
 Mean absolute error between simulated and real success rates, in percentage points. For scene $s$ and condition $c$, the 6 cells (3 tasks $t$ × 2 policies $\pi$) are averaged with equal weight:
 
@@ -34,9 +30,9 @@ where $k^{\mathrm{sim}}$ is the number of successes out of 80 simulated trials u
 
 Values: [`results/data/mae.csv`](results/data/mae.csv)
 
-## 4. CrossScore
+## 3. CrossScore
 
-CrossScore per scene and condition, on the held-out Test views (mean over test views; the same views as Section 5) and on the OBS views (mean of the right and left OBS cameras). Higher is better.
+CrossScore per scene and condition, on the held-out Test views (mean over test views; the same views as Section 4) and on the OBS views (mean of the right and left OBS cameras). Higher is better.
 
 ![CrossScore on Test and OBS views](results/figures/crossscore_lines.png)
 
@@ -57,7 +53,7 @@ CrossScore per scene and condition, on the held-out Test views (mean over test v
 
 Values: [`results/data/crossscore.csv`](results/data/crossscore.csv)
 
-## 5. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
+## 4. Novel View Synthesis Quality (Test Set: PSNR / SSIM / LPIPS)
 
 Full-reference scores on the held-out test views, per scene and condition.
 
@@ -82,11 +78,11 @@ PSNR in dB (↑), SSIM (↑), LPIPS (↓).
 
 Values: [`results/data/novel_view_metrics.csv`](results/data/novel_view_metrics.csv)
 
-## 6. Task Success Rate under Disturbances: All Results
+## 5. Task Success Rate under Disturbances: All Results
 
-Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean sim result at the left as the reference, then sim under every disturbance (the pairs highlighted in Section 2 are drawn from these).
+Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean sim result at the left as the reference, then sim under every disturbance (the pairs highlighted in Section 1 are drawn from these).
 
-### 6.1 FR3 Duo
+### 5.1 FR3 Duo
 
 ![Task success rate under disturbances — Duo / Cup](results/figures/success_rate_disturbances/Duo_Cup.png)
 
@@ -94,7 +90,7 @@ Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean 
 
 ![Task success rate under disturbances — Duo / Tape](results/figures/success_rate_disturbances/Duo_Tape.png)
 
-### 6.2 FR3 Flat
+### 5.2 FR3 Flat
 
 ![Task success rate under disturbances — Flat / Cup](results/figures/success_rate_disturbances/Flat_Cup.png)
 
@@ -102,7 +98,7 @@ Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean 
 
 ![Task success rate under disturbances — Flat / Tape](results/figures/success_rate_disturbances/Flat_Tape.png)
 
-### 6.3 G2
+### 5.3 G2
 
 ![Task success rate under disturbances — G2 / Cup](results/figures/success_rate_disturbances/G2_Cup.png)
 
@@ -110,13 +106,13 @@ Success rate of pi_1 and pi_2 per scene and task: the real result and the Clean 
 
 ![Task success rate under disturbances — G2 / Tape](results/figures/success_rate_disturbances/G2_Tape.png)
 
-## 7. Supplementary Analysis of Table II: Constant Baselines and Fold-wise Class Support
+## 6. Supplementary Analysis of Table II: Constant Baselines and Fold-wise Class Support
 
 This section supplements Table II and Sec. V-E of the main paper with constant-prediction baselines, the distribution of ranking-disagreement labels across scenes, and a class-wise analysis of Tape predictions. The evaluated conditions and the quality-based predictions are unchanged: every number below is recomputed from the out-of-fold prediction log behind Table II ([`results/data/reliability_predictions.csv`](results/data/reliability_predictions.csv)), without refitting.
 
 The label is the same as in the main paper: $H=0$ when the observed ranking of the two policies in simulation agrees with the real ranking, and $H=1$ when it disagrees or the two policies tie in simulation. $H$ describes the ranking of the two policies, not the success or failure of individual robot trials.
 
-### 7.1 Table S1: Extended comparison with constant-prediction baselines
+### 6.1 Table S1: Extended comparison with constant-prediction baselines
 
 *Always reliable* predicts $\widehat{H}=0$ for every condition and *Always unreliable* predicts $\widehat{H}=1$; neither uses a quality score or a fitted threshold.
 
@@ -142,7 +138,7 @@ The SSIM result of 32/45 in Sec. V-E is the highest pooled task-level accuracy a
 
 Equal Cup counts do not imply identical individual Cup predictions. Separately, the All-three result of NVS-SQA / Test (13/15) exceeds both constant predictors (6/15 and 9/15); that result stands on its own, although 13/15 on three scenes does not by itself establish general reliability of scene acceptance.
 
-### 7.2 Fig. S1: Label layout and Tape class support
+### 6.2 Fig. S1: Label layout and Tape class support
 
 ![Ranking-disagreement labels and Tape class support](results/figures/reliability_labels.png)
 
@@ -150,7 +146,7 @@ Equal Cup counts do not imply identical individual Cup predictions. Separately, 
 
 The point is not that quality metrics are inherently uninformative for Tape. With this label layout and the single-class fallback, the quality score is never used in the one fold that contains Tape disagreements. Under the current protocol the Tape accuracy of any quality-based method is therefore at most 12/15, because the three G2 disagreements are always missed, and the always-reliable predictor attains that bound.
 
-### 7.3 Table S2: Tape error decomposition
+### 6.3 Table S2: Tape error decomposition
 
 Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged as one, FN a missed disagreement, FP a false alarm on an agreement-labeled condition, and TN a correctly passed agreement.
 

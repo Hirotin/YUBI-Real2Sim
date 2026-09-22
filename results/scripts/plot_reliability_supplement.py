@@ -39,7 +39,7 @@ METHODS = [("NVS-SQA Test", "NVS-SQA / Test"), ("NVS-SQA OBS", "NVS-SQA / OBS"),
            ("PSNR Test", "PSNR / Test"), ("SSIM Test", "SSIM / Test"), ("LPIPS Test", "LPIPS / Test")]
 # computed here with the same protocol, not part of Table II
 EXTRA_METHODS = [("CrossScore Test", "CrossScore / Test \u2020"),
-                 ("CrossScore OBS-TableII", "CrossScore / OBS \u2020")]
+                 ("CrossScore OBS-TableII", "CrossScore / OBS-TableII \u2020")]
 DISAGREE = "#b91c1c"
 
 

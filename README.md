@@ -138,7 +138,9 @@ The SSIM result of 32/45 in Sec. V-E is the highest pooled task-level accuracy a
 \underbrace{8-8}_{\mathrm{Cup}} + \underbrace{9-12}_{\mathrm{Tape}} + \underbrace{15-15}_{\mathrm{Pen}} = -3
 ```
 
-Equal Cup counts do not imply identical individual Cup predictions. Separately, the All-three result of NVS-SQA / Test (13/15) exceeds both constant predictors (6/15 and 9/15); that result stands on its own, although 13/15 on three scenes does not by itself establish general reliability of scene acceptance.
+Equal Cup counts do not imply identical individual Cup predictions.
+
+CrossScore, run through the same scene-held-out procedure on the same 15 conditions, does not change this picture. On Test views it reaches 30/45, the same pooled accuracy as NVS-SQA / Test and below PSNR and SSIM; on the Table II OBS views it reaches 26/45, below NVS-SQA / OBS (29/45), trading a much weaker Cup result (5/15 vs. 12/15) for a slightly better Tape result (6/15 vs. 2/15). Neither CrossScore view exceeds the always-reliable predictor, and on All-three (4/15 and 9/15) neither approaches the 13/15 of NVS-SQA / Test. Separately, the All-three result of NVS-SQA / Test (13/15) exceeds both constant predictors (6/15 and 9/15); that result stands on its own, although 13/15 on three scenes does not by itself establish general reliability of scene acceptance.
 
 ### 6.2 Fig. S1: Label layout and Tape class support
 
@@ -150,7 +152,7 @@ The point is not that quality metrics are inherently uninformative for Tape. Wit
 
 ### 6.3 Table S2: Tape error decomposition
 
-Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged as one, FN a missed disagreement, FP a false alarm on an agreement-labeled condition, and TN a correctly passed agreement.
+Same conditions and scene-held-out procedure as Table S1, including the CrossScore rows. Ranking disagreement ($H=1$) is the positive class: TP is a disagreement flagged as one, FN a missed disagreement, FP a false alarm on an agreement-labeled condition, and TN a correctly passed agreement.
 
 <!-- table-s2:start -->
 | Method / view | TP ↑ | FN ↓ | FP ↓ | TN ↑ | Balanced accuracy ↑ |

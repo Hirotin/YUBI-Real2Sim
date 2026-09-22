@@ -13,10 +13,13 @@ predicted. CrossScore is higher-is-better (direction = +1).
 
 Inputs
     results/data/crossscore.csv               CrossScore_Test / CrossScore_OBS per scene x condition
+    results/data/crossscore_obs_table2.csv    CrossScore on exactly the OBS images Table II's NVS-SQA OBS
+                                              used (ABCI-Q cf_eval_final/outputs; the NVS-SQA values of
+                                              those images reproduce Table II's OBS scores exactly)
     results/data/reliability_predictions.csv  labels of the 15 matched conditions (Table II log)
 Output
     results/data/reliability_predictions_crossscore.csv   same schema as the Table II log,
-        methods "CrossScore Test" and "CrossScore OBS"
+        methods "CrossScore Test", "CrossScore OBS", "CrossScore OBS-TableII"
 """
 
 import argparse
@@ -28,6 +31,7 @@ from pathlib import Path
 RESULTS = Path(__file__).resolve().parents[1]
 SCORES = RESULTS / "data" / "crossscore.csv"
 LABELS = RESULTS / "data" / "reliability_predictions.csv"
+OBS_TABLE2 = RESULTS / "data" / "crossscore_obs_table2.csv"
 OUTPUT = RESULTS / "data" / "reliability_predictions_crossscore.csv"
 
 VARIANT_TO_CONDITION = {"Hole54": "hole_54", "Hole90": "hole_90", "CentralPinhole": "fov_center",
@@ -77,12 +81,23 @@ def main():
     if missing:
         raise SystemExit(f"CrossScore missing for {missing}")
 
-    predictions = []
+    quality = {}
     for method, column in METHODS:
+        for s in SCENES:
+            for v in variants:
+                quality[(method, s, v)] = float(scores[(s, VARIANT_TO_CONDITION[v])][column])
+    methods = [m for m, _ in METHODS]
+    if OBS_TABLE2.exists():
+        for r in load_rows(OBS_TABLE2):
+            quality[("CrossScore OBS-TableII", r["scene"], r["variant"])] = float(r["crossscore_obs"])
+        if all(("CrossScore OBS-TableII", s, v) in quality for s in SCENES for v in variants):
+            methods.append("CrossScore OBS-TableII")
+
+    predictions = []
+    for method in methods:
         for target in TARGETS:
             rows = [{"scene": s, "variant": v, "label": labels[(target, s, v)],
-                     "quality": float(scores[(s, VARIANT_TO_CONDITION[v])][column])}
-                    for s in SCENES for v in variants]
+                     "quality": quality[(method, s, v)]} for s in SCENES for v in variants]
             for scene in SCENES:
                 train = [r for r in rows if r["scene"] != scene]
                 test = [r for r in rows if r["scene"] == scene]
@@ -98,7 +113,7 @@ def main():
         writer.writeheader()
         writer.writerows(predictions)
     print(f"Wrote {args.output} ({len(predictions)} rows)")
-    for method, _ in METHODS:
+    for method in methods:
         counts = {t: sum(r["correct"] for r in predictions if r["method"] == method and r["target"] == t)
                   for t in TARGETS}
         print(method, counts, "total", sum(counts[t] for t in TARGETS[:3]))
